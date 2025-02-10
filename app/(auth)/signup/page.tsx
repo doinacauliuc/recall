@@ -2,74 +2,90 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "/Users/cauliucdoina/React Projects/recall/app/(auth)/form.module.css"; // Import del modulo CSS
+import styles from "@/app/(auth)/form.module.css"; // Import del modulo CSS
+import Link from "next/link";
 
-export default function SignupPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [error, setError] = useState("");
-  const router = useRouter();
+export default function Register() {
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+    e.preventDefault()
 
-    const res = await fetch("/api/auth/register.ts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    // Resetta errori e messaggi
+    setError(null)
+    setMessage(null)
 
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error || "Errore nella registrazione");
-      return;
+    // Prepara i dati
+    const userData = {
+      username,
+      email,
+      password,
     }
 
-    router.push("/dashboard"); // Redirect to a dashboard or login page after success
-  };
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      
+      const data = await res.json()
+
+      if (res.ok) {
+        // Registrazione riuscita
+        setMessage('Registration successful! Please log in.')
+      } else {
+        // Gestione degli errori (ad esempio, email o username già esistente)
+        setError(data.error || 'An unknown error occurred')
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.')
+    }
+  }
+
 
   return (
     <div className={styles.Container}>
+      
       <div className={styles.card}>
+      <Link href="/app">
+        <img src="/logo.svg" alt="Logo" className={styles.logo} />
+      </Link>
         <h2 className={styles.title}>Register</h2>
         {error && <p className={styles.error}>{error}</p>}
+        {message && <p className={styles.message}>{message}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
             <input
-                type="firstName"
-                placeholder="First Name"
-                value={form.name}
-                onChange={(e) => setFirstName(e.target.value)}
-                className={styles.input}
-            />
-            <input
-                type="lastName"
-                placeholder="Last Name"
-                value={form.name}
-                onChange={(e) => setLastName(e.target.value)}
+                type="username"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className={styles.input}
             />
             <input
                 type="email"
                 placeholder="Email"
-                value={form.email}
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
             />
             <input
-                type="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.input}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles.input}
             />
             <button type="submit" className={styles.button}>
                 Sign Up
             </button>
-          
         </form>
       </div>
     </div>

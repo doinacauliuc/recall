@@ -6,6 +6,13 @@
     min-height: 100vh;
      /* Grigio chiaro */
   }
+  .logo {
+    width: 60px;
+    height: 60px;
+    rotate: 70deg;
+    margin-bottom: 0;
+}
+
   
   .card {
     padding: 2rem;
@@ -28,6 +35,7 @@
     font-size: 2.5rem;
     font-weight: bold;
     color: #13087b;
+    margin-top: 0;
 }
   .error {
     color: #e53e3e; /* Rosso */

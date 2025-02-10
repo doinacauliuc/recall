@@ -1,40 +1,59 @@
 
 "use client";
+
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "/Users/cauliucdoina/React Projects/recall/app/(auth)/form.module.css"; // Import del modulo CSS
+import styles from "@/app/(auth)/form.module.css";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError(null);
+    setMessage(null);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    if (!email || !password) {
+      setError("All fields are required");
+      return;
+    }
 
-    if (result?.error) {
-      setError("Credenziali non valide");
-    } else {
-      router.push("/dashboard");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage("Login successful! Redirecting...");
+        console.log(data);
+        console.log("Login successful! Redirecting...");
+        setTimeout(() => router.push("/dashboard"), 2000); // Redirect after 2s
+      } else {
+        setError(data.error || "Login failed");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
     }
   };
 
   return (
     <div className={styles.Container}>
       <div className={styles.card}>
+        <Link href="/app">
+          <img src="/logo.svg" alt="Logo" className={styles.logo} />
+        </Link>
         <h2 className={styles.title}>Log In</h2>
         {error && <p className={styles.error}>{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
             placeholder="Email"
