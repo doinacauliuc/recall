@@ -48,7 +48,7 @@ export default function Login() {
   return (
     <div className={styles.Container}>
       <div className={styles.card}>
-        <Link href="/app">
+        <Link href="/">
           <img src="/logo.svg" alt="Logo" className={styles.logo} />
         </Link>
         <h2 className={styles.title}>Log In</h2>
