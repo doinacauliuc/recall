@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "./login.module.css"; // Import del modulo CSS
+import styles from "/Users/cauliucdoina/React Projects/recall/app/(auth)/form.module.css"; // Import del modulo CSS
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -30,7 +30,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={styles.loginContainer}>
+    <div className={styles.Container}>
       <div className={styles.card}>
         <h2 className={styles.title}>Log In</h2>
         {error && <p className={styles.error}>{error}</p>}
