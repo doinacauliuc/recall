@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/app/hooks/useAuth"; // Import the custom hook
-import Navbar from "@/app/components/Navbar";
+import Navbar from "@/components/navbar";
+import styles from "./dashboard.module.css";
+import Link from "next/link";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -39,8 +41,7 @@ export default function Dashboard() {
   return (
     <div>
       <Navbar />
-      <h1>Dashboard</h1>
-      <p>Welcome, {displayUser?.username}</p>
+      <h1> Welcome {user?.username} </h1>
     </div>
   );
 }
