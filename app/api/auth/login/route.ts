@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
-const SECRET_KEY = process.env.JWT_SECRET;
+const SECRET_KEY: string = process.env.JWT_SECRET!;
 
 if (!SECRET_KEY) {
   throw new Error("JWT_SECRET is not defined in environment variables");
@@ -41,13 +41,17 @@ export async function POST(req: Request) {
       expiresIn: "7d", // Token valid for 7 days
     });
 
-    //Store the token in an HTTP-only cookie
-    const response = NextResponse.json(
-      { message: "Login successful", user },
-      { status: 200 }
-    );
-    response.headers.set("Set-Cookie", `token=${token}; HttpOnly; Path=/; Secure; SameSite=Strict`);
+    console.log("Token:", token);
 
+    // Set token in HTTP-only cookie
+    const response = NextResponse.json({ message: "Login successful" });
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: "/", 
+    });
     return response;
   } catch (error) {
     console.error("Error in login API:", error);
