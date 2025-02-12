@@ -12,4 +12,23 @@ model User {
   username String @unique
   email    String @unique
   password String
+  courses Course[]
+}
+
+model Course {
+  course_id   Int       @id @default(autoincrement())
+  coruse_name String
+  creation_date DateTime @default(now())
+  user_id    Int
+  user       User    @relation(fields: [user_id], references: [id])
+  notes    Note[]
+}
+
+model Note {
+  note_id   Int       @id @default(autoincrement())
+  note_title String
+  content    String
+  creation_date DateTime @default(now())
+  course_id   Int
+  course      Course   @relation(fields: [course_id], references: [course_id])
 }

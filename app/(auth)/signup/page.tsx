@@ -53,28 +53,29 @@ export default function Register() {
 
   return (
     <div className={styles.Container}>
-      
+
       <div className={styles.card}>
-      <Link href="/">
-        <img src="/logo.svg" alt="Logo" className={styles.logo} />
-      </Link>
+        <Link href="/">
+          <img src="/logo.svg" alt="Logo" className={styles.logo} />
+        </Link>
         <h2 className={styles.title}>Register</h2>
         {error && <p className={styles.error}>{error}</p>}
         {message && <p className={styles.message}>{message}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className={styles.formGroup}>
             <input
-                type="username"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className={styles.input}
+              type="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className={styles.input}
             />
             <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={styles.input}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={styles.input}
             />
             <input
               type="password"
@@ -83,9 +84,10 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               className={styles.input}
             />
-            <button type="submit" className={styles.button}>
-                Sign Up
-            </button>
+          </div>
+          <button type="submit" className={styles.button}>
+            Sign Up
+          </button>
         </form>
       </div>
     </div>

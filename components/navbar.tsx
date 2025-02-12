@@ -1,27 +1,14 @@
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import './navbar.css';
+
+import styles from './styles/navbar.module.css';
+import { useUser } from "@/app/hooks/useUser";
+import { type User } from "@/app/hooks/useAuth"
 
 export default function Navbar() {
-    const router = useRouter();
-
-    const handleLogout = async () => {
-        // Call the logout API to remove the token
-        await fetch("/api/auth/logout", {
-            method: "GET", // You can use POST if preferred
-        });
-
-        // Redirect the user to the login page after logout
-        router.push("/login");
-    };
+    const { user, loading } = useUser();    
     return (
         <div>
-            <nav className={'navbar'}>
-                <Link href={'/'}>
-                    <img src={'/logo-box.svg'} alt={'Recall Logo'} className={'logo'} />
-                </Link>
-                <button className={'button'} onClick={handleLogout}>Log out</button>
-
+            <nav className={styles.navbar}>
+                <h1 className={styles.welcomeMessage}>Hello, {user?.username} </h1>
             </nav>
         </div>
     );

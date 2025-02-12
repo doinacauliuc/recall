@@ -1,0 +1,10 @@
+.pageContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.title{
+    font-size: 3rem;
+    font-family: 'Roboto', sans-serif;
+}

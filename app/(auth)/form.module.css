@@ -34,22 +34,27 @@
 .title {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #13087b;
+    color: #223558;
     margin-top: 0;
 }
   .error {
     color: #e53e3e; /* Rosso */
     font-size: 0.875rem;
   }
-  
+
+  .formGroup{
+    display: flex;
+    flex-direction: column;
+    gap:1.5rem;
+  }
   .input {
-    width: 70%;
+    width: 20rem;
     height: 17%;
     padding: 0.5rem;
-    border: 1px solid #d1d5db;
+    border: 1px  #d1d5db;
     border-radius: 4px;
-    padding-bottom: 4px;
-    margin-bottom: 1.5rem; 
+    color: #223558;
+    font-size: 13px;
   }
   
   .button{
@@ -62,13 +67,13 @@
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    background-color: #13087b;
+    background-color: #223558;
     color: white;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .button:hover {
-    background-color:#8584cb;
+    background-color:#38416c;
     transform: translateY(-2px);
 }
 

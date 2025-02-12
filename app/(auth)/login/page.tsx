@@ -23,6 +23,7 @@ export default function Login() {
       return;
     }
 
+    //richiesta post al server per verificare le credenziali
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -30,8 +31,10 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
+      //risposta del server
       const data = await res.json();
 
+      
       if (res.ok) {
         setMessage("Login successful! Redirecting...");
         console.log(data);
@@ -73,7 +76,7 @@ export default function Login() {
           </button>
           <div className={styles.footer}>
             <p>Don't have an account?</p>
-            <Link href= "/signup" style={{ color: "#13087b" }}>
+            <Link href= "/signup" style={{ color: "#223558" }}>
               <p>Sign Up</p>
             </Link>
           </div>
