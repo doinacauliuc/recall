@@ -1,28 +1,21 @@
-"use client"; // Ensure it's a client-side hook
+"use client"; 
 
 import { useState, useEffect, createContext, useContext } from "react";
-import useAuth from "./useAuth"; // Import the custom hook
-import { useRouter } from "next/navigation";
-
-interface User {
-  id: number;
-  email: string;
-  username: string;
-}
+import useAuth, {type User} from "./userData"; // Import the custom hook
 
 interface UserContextType {
   user: User | null;
-  loading: boolean;
 }
 
+//inizializzo contesto
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
+//componente che rende disponibile i dati del context ai figli
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const { user, loading } = useAuth(); // Fetch user from your authentication system
+  const { user } = useAuth(); // recupera i dati dell'utente dal sistema di autenticazione
   const [localUser, setLocalUser] = useState<User | null>(null);
 
-  // Load user from localStorage on mount (for persistence)
+  // Cerca i dati dell'utente nel localStorage al montaggio
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -30,18 +23,17 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  // Sync user state and handle redirection
+  // Gestisce l'autenticazione e aggiorna il contesto solo quando l'utente effettua il login
   useEffect(() => {
-    if (!loading && user === null) {
-      router.push("/login"); // Redirect if not authenticated
-    } else if (user) {
+    if ( user !== null) {
+      // Se l'utente è autenticato, salva i suoi dati nel localStorage
       localStorage.setItem("user", JSON.stringify(user));
       setLocalUser(user);
     }
-  }, [user, loading, router]);
+  }, [user]);
 
   return (
-    <UserContext.Provider value={{ user: user || localUser, loading }}>
+    <UserContext.Provider value={{ user: localUser }}>
       {children}
     </UserContext.Provider>
   );

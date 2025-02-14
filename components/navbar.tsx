@@ -1,10 +1,9 @@
 
 import styles from './styles/navbar.module.css';
-import { useUser } from "@/app/hooks/useUser";
-import { type User } from "@/app/hooks/useAuth"
+import { useUser } from "@/app/hooks/userContext";
 
 export default function Navbar() {
-    const { user, loading } = useUser();    
+    const { user } = useUser();    
     return (
         <div>
             <nav className={styles.navbar}>

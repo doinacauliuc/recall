@@ -2,16 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import NotesPage from "@/components/notes";
+import NotesPage from "@/components/pages/notes";
+import FlashcardPage from "@/components/pages/flashcards";
+import DashboardPage from "@/components/pages/dashboard";
+import RevisePage from "@/components/pages/revise";
 import Sidenav from "@/components/sidenav";
 import Navbar from "@/components/navbar";
 import styles from "./dashboard.module.css";
 import { sessionCheck } from "@/app/hooks/sessionCheck";
+import { JSX } from "react/jsx-runtime";
 
 export default function Dashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const router = useRouter();
+  const [activePage, setActivePage] = useState("dashboard");
 
+  const pages: { [key: string]: JSX.Element } = {
+    dashboard: <DashboardPage />,
+    notes: <NotesPage />,
+    flashcards: <FlashcardPage />,
+    revise: <RevisePage />
+  };
+ 
   useEffect(() => {
     async function checkAuth() {
       const auth = await sessionCheck();
@@ -34,11 +46,11 @@ export default function Dashboard() {
   return (
     <div className={styles.mainContainer}>
       <div className={styles.componentsContainer}>
-        <Sidenav />
+        <Sidenav setActivePage={setActivePage} />
         <Navbar />
       </div>
       <div className={styles.contentContainer}>
-        <NotesPage />
+      {pages[activePage] || <DashboardPage />} {/* Default to Dashboard */}
       </div>
     </div>
   );

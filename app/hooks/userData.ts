@@ -8,7 +8,6 @@ export type User = {
 
 export default function useAuth() {
     const [user, setUser] = useState<User>(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchUser() {
@@ -29,13 +28,11 @@ export default function useAuth() {
             } catch (err) {
                 console.error("An error occurred while fetching user data", err);
                 setUser(null);
-            } finally {
-                setLoading(false);
-            }
+            } 
         }
 
         fetchUser();
     }, []);
 
-    return { user, loading };
+    return { user };
 }

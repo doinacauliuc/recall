@@ -1,54 +1,48 @@
-
+"use client";
 import styles from './styles/sidernav.module.css'
-import { LayoutDashboard, NotebookText, Book, CreditCard, MessageSquareText, Settings } from 'lucide-react';
+import { LayoutDashboard, NotebookText, CreditCard, MessageSquareText, Settings } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
-export default function Sidenav() {
+
+export default function Sidenav({ setActivePage }: { setActivePage: (page: string) => void }) {
     
-     const router = useRouter();
+    const router = useRouter();
     
-        const handleLogout = async () => {
-            // Call the logout API to remove the token
-            await fetch("/api/auth/logout", {
-                method: "GET", // You can use POST if preferred
-            });
-    
-            // Redirect the user to the login page after logout
-            router.push("/");
-        };
+    const handleLogout = async () => {
+        await fetch("/api/auth/logout", { method: "GET" });
+        router.push("/");
+    };
+
     return (
         <section className={styles.sidenav}>
             <div className={styles.pagesContainer}>
-                <Link href='/' >
-                <img src="/logo-box.svg" alt="logo" className={styles.logo} />
+                <Link href='/'>
+                    <img src="/logo-box.svg" alt="logo" className={styles.logo} />
                 </Link>
-                <div className={styles.pagelink}>
+                <div className={styles.pagelink} onClick={() => setActivePage("dashboard")}>
                     <LayoutDashboard />
-                    <a href="#">Dashboard</a>
+                    <h1>Dashboard</h1>
                 </div>
-                <div className={styles.pagelink}>
+                <div className={styles.pagelink} onClick={() => setActivePage("notes")}>
                     <NotebookText />
-                    <a href="#">Notes</a>
+                    <h1>Notes</h1>
                 </div>
-                <div className={styles.pagelink}>
+                <div className={styles.pagelink} onClick={() => setActivePage("flashcards")}>
                     <CreditCard />
                     <a href="#">Flashcards</a>
                 </div>
-                <div className={styles.pagelink}>
+                <div className={styles.pagelink} onClick={() => setActivePage("revise")}>
                     <MessageSquareText />
-                    <a href="#">Revise</a>
+                    <h1>Revise</h1>
                 </div>
             </div>
-                <div className={styles.utilitiesContainer}>
+            <div className={styles.utilitiesContainer}>
                 <div className={styles.pagelink}>
                     <Settings />
-                    <a href="#">Settings</a>
+                    <h1>Settings</h1>
                 </div>
                 <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
-                </div>
+            </div>
         </section>
-
-
     );
-
 }

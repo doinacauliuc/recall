@@ -17,7 +17,7 @@ model User {
 
 model Course {
   course_id   Int       @id @default(autoincrement())
-  coruse_name String
+  course_name String
   creation_date DateTime @default(now())
   user_id    Int
   user       User    @relation(fields: [user_id], references: [id])
