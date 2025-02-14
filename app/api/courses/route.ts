@@ -23,3 +23,22 @@ export async function GET(req: NextRequest) {
     }
 }
 
+export async function POST(req: Request) {
+    try {
+        const { course_name, user_id } = await req.json();
+        if (!course_name || !user_id) {
+            return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+        }
+
+        const newCourse = await prisma.course.create({
+            data: { course_name, user_id },
+        });
+
+        return NextResponse.json(newCourse, { status: 201 });
+    } catch (error) {
+        console.error("Error adding course:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
+
+

@@ -62,4 +62,8 @@
     background-color: #223558;
     color: white;
   }
-  
+
+ .logoutButton:hover {
+  background-color: #555388;
+  transform: translateY(-2px);
+}
