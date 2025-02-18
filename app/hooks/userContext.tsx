@@ -1,49 +1,50 @@
 "use client"; 
 
 import { useState, useEffect, createContext, useContext } from "react";
-import useAuth, {type User} from "./userData"; // Import the custom hook
+import useAuth, { type User } from "./userData"; // Import custom hook for authentication
 
+// Define the context type
 interface UserContextType {
   user: User | null;
 }
 
-//inizializzo contesto
+// Create the context for user data (initially undefined)
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-//componente che rende disponibile i dati del context ai figli
+// Component that provides user data to children components
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth(); // recupera i dati dell'utente dal sistema di autenticazione
-  const [localUser, setLocalUser] = useState<User | null>(null);
+  const { user } = useAuth(); // Retrieve user data from authentication system
+  const [localUser, setLocalUser] = useState<User | null>(null); // Local state to store user data
 
-  // Cerca i dati dell'utente nel localStorage al montaggio
+  // Fetch user data from localStorage when the component mounts
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setLocalUser(JSON.parse(storedUser));
+      setLocalUser(JSON.parse(storedUser)); // Parse and set user data if it exists in localStorage
     }
-  }, []);
+  }, []); // Empty dependency array, runs only once on mount
 
-  // Gestisce l'autenticazione e aggiorna il contesto solo quando l'utente effettua il login
+  // If user data changes (user logs in), update localStorage and state
   useEffect(() => {
-    if ( user !== null) {
-      // Se l'utente è autenticato, salva i suoi dati nel localStorage
-      localStorage.setItem("user", JSON.stringify(user));
-      setLocalUser(user);
+    if (user !== null) {
+      localStorage.setItem("user", JSON.stringify(user)); // Save user data to localStorage
+      setLocalUser(user); // Update local state with user data
     }
-  }, [user]);
+  }, [user]); // This effect runs when the 'user' data changes
 
   return (
+    // Provide user data to children components via context
     <UserContext.Provider value={{ user: localUser }}>
       {children}
     </UserContext.Provider>
   );
 };
 
-// Custom hook to access the user
+// Custom hook to access the user data from context
 export const useUser = () => {
-  const context = useContext(UserContext);
+  const context = useContext(UserContext); // Access the context
   if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
+    throw new Error("useUser must be used within a UserProvider"); // Error if not used within the provider
   }
-  return context;
+  return context; // Return the user context value
 };

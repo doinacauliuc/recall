@@ -1,5 +1,5 @@
 
-"use client";
+"use client"; // Ensures this component runs only on the client side.
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -7,23 +7,28 @@ import styles from "@/app/(auth)/form.module.css";
 import Link from "next/link";
 
 export default function Login() {
+  // State variables for email, password, error messages, and success messages
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+
+  // Next.js router instance for navigation
   const router = useRouter();
 
+  // Handles form submission for login
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
     setError(null);
     setMessage(null);
 
+    // Check if fields are empty
     if (!email || !password) {
       setError("All fields are required");
       return;
     }
 
-    //richiesta post al server per verificare le credenziali
+    // Send a POST request to the login API
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -31,16 +36,19 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      //risposta del server
+      // Parse the response from the server
       const data = await res.json();
 
-      
+      // If login is successful
       if (res.ok) {
         setMessage("Login successful! Redirecting...");
         console.log(data);
         console.log("Login successful! Redirecting...");
-        setTimeout(() => router.push("/dashboard"), 2000); // Redirect after 2s
+
+        // Redirect to the dashboard after 2 seconds
+        setTimeout(() => router.push("/dashboard"), 2000);
       } else {
+        // If login fails, display the error message
         setError(data.error || "Login failed");
       }
     } catch (err) {
@@ -51,12 +59,20 @@ export default function Login() {
   return (
     <div className={styles.Container}>
       <div className={styles.card}>
+        {/* Logo with a link to the home page */}
         <Link href="/">
           <img src="/logo.svg" alt="Logo" className={styles.logo} />
         </Link>
+
+        {/* Title for the login form */}
         <h2 className={styles.title}>Log In</h2>
+
+        {/* Display error messages if any */}
         {error && <p className={styles.error}>{error}</p>}
+
+        {/* Login form */}
         <form onSubmit={handleLogin} className="space-y-4">
+          {/* Email input field */}
           <input
             type="email"
             placeholder="Email"
@@ -64,6 +80,8 @@ export default function Login() {
             onChange={(e) => setEmail(e.target.value)}
             className={styles.input}
           />
+
+          {/* Password input field */}
           <input
             type="password"
             placeholder="Password"
@@ -71,16 +89,19 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             className={styles.input}
           />
+
+          {/* Submit button */}
           <button type="submit" className={styles.button}>
             Log In
           </button>
+
+          {/* Footer with a link to the signup page */}
           <div className={styles.footer}>
             <p>Don't have an account?</p>
-            <Link href= "/signup" style={{ color: "#223558" }}>
+            <Link href="/signup" style={{ color: "#223558" }}>
               <p>Sign Up</p>
             </Link>
           </div>
-          
         </form>
       </div>
     </div>

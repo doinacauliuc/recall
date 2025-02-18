@@ -1,100 +1,108 @@
-import { useUser } from "@/app/hooks/userContext";
-import styles from "@/components/styles/pages.module.css"
-import { use, useEffect, useState } from "react";
+"use client";
+
+import { useUser } from "@/app/hooks/userContext"; // Import custom hook to access user context
+import styles from "@/components/styles/pages.module.css"; // Import the CSS module for styling
+import { useEffect, useState } from "react"; // Import React hooks
 
 export default function AddNotesPage() {
-    const [noteTitle, setNoteTitle] = useState("");
-    const [noteContent, setNoteContent] = useState("");
-    const [ error, setError] = useState("");
-    const [ loading, setLoading] = useState(false);
-    const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
-    const [courses, setCourses] = useState<{ course_id: number; course_name: string }[]>([]);
-    const { user } = useUser();
-    const userId = user?.id;
+    // State variables for managing note title, content, error messages, loading status, selected course, and fetched courses
+    const [noteTitle, setNoteTitle] = useState(""); // For storing the title of the note
+    const [noteContent, setNoteContent] = useState(""); // For storing the content of the note
+    const [error, setError] = useState(""); // For storing any error messages
+    const [loading, setLoading] = useState(false); // For managing the loading state when adding a note
+    const [selectedCourse, setSelectedCourse] = useState<number | null>(null); // For storing the selected course ID
+    const [courses, setCourses] = useState<{ course_id: number; course_name: string }[]>([]); // For storing the list of courses
+    const { user } = useUser(); // Access user context to get the logged-in user's data
+    const userId = user?.id; // Get the user ID from the context
 
-
-   // Function to handle adding a new course
-   const addNote = async () => {
-    if (!noteTitle.trim()) {
-        setError("Course title cannot be empty.");
-        return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-        const res = await fetch("/api/notes", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ note_title: noteTitle, content: noteContent, course_id: selectedCourse }),
-        });
-
-        if (!res.ok) {
-            throw new Error("Failed to add note.");
+    // Function to handle adding a new note
+    const addNote = async () => {
+        // Validate if the note title is provided
+        if (!noteTitle.trim()) {
+            setError("Course title cannot be empty."); // Show an error message if title is empty
+            return;
         }
 
-        const newNote = await res.json();
-        setNoteTitle(""); // Reset input
-        setNoteContent("");
-        console.log("New note created")
-    } catch (err) {
-        console.error("Error adding note:", err);
-        setError("Failed to add note.");
-    } finally {
-        setLoading(false);
-    }
-};
+        // Set loading state to true and clear previous errors
+        setLoading(true);
+        setError("");
 
-    // Define fetchCourses at the top level
-    const fetchCourses = async () => {
         try {
-            const response = await fetch(`/api/courses?userId=${userId}`);
-            const data = await response.json();
-            setCourses(data);
-        } catch (error) {
-            console.error("Error fetching courses:", error);
+            // Send a POST request to add the note to the database
+            const res = await fetch("/api/notes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ note_title: noteTitle, content: noteContent, course_id: selectedCourse }),
+            });
+
+            // If the request fails, throw an error
+            if (!res.ok) {
+                throw new Error("Failed to add note.");
+            }
+
+            const newNote = await res.json(); // Parse the response to get the new note data
+            setNoteTitle(""); // Reset note title input after successful creation
+            setNoteContent(""); // Reset note content input
+            console.log("New note created") // Log successful note creation
+        } catch (err) {
+            console.error("Error adding note:", err); // Log error to the console
+            setError("Failed to add note."); // Display an error message
+        } finally {
+            setLoading(false); // Set loading to false after the operation is complete
         }
     };
 
-    // Fetch courses on mount or when userId changes
+    // Function to fetch courses associated with the user
+    const fetchCourses = async () => {
+        try {
+            // Fetch the courses from the server using the user ID
+            const response = await fetch(`/api/courses?userId=${userId}`);
+            const data = await response.json();
+            setCourses(data); // Update the courses state with the fetched data
+        } catch (error) {
+            console.error("Error fetching courses:", error); // Log error if fetching courses fails
+        }
+    };
+
+    // Fetch courses when the component mounts or when the userId changes
     useEffect(() => {
-        if (userId) fetchCourses();
+        if (userId) fetchCourses(); // Call fetchCourses if userId is available
     }, [userId]);
 
     return (
-        <div className={styles.pageContainer}>
-            <h1 className={styles.title}>Add Note</h1>
-            <div className={styles.inputContainer}>
+        <div className={styles.pageContainer}> {/* Main container for the page */}
+            <h1 className={styles.title}>Add Note</h1> {/* Page title */}
+            <div className={styles.inputContainer}> {/* Container for note title and course selector */}
                 <input
                     type="text"
-                    placeholder="New note title"
+                    placeholder="New note title" // Placeholder text
                     value={noteTitle}
-                    onChange={(e) => setNoteTitle(e.target.value)}
-                    className={styles.titleInput}
+                    onChange={(e) => setNoteTitle(e.target.value)} // Update noteTitle state on input change
+                    className={styles.titleInput} // Apply styling from CSS module
                 />
                 <select
-                    value={selectedCourse ?? ""}
-                    onChange={(e) => setSelectedCourse(Number(e.target.value))}
-                    className={styles.input}
+                    value={selectedCourse ?? ""} // If no course is selected, display an empty value
+                    onChange={(e) => setSelectedCourse(Number(e.target.value))} // Update selectedCourse on change
+                    className={styles.input} // Apply styling from CSS module
                 >
-                    <option value="" disabled className={styles.select}>Select course</option>
+                    <option value="" disabled className={styles.select}>Select course</option> {/* Disabled placeholder option */}
                     {courses.map((course) => (
                         <option key={course.course_id} value={course.course_id}>
-                            {course.course_name}
+                            {course.course_name} {/* Display each course as an option */}
                         </option>
                     ))}
                 </select>
-                <button className={styles.button} onClick={addNote}> Add </button>
+                <button className={styles.button} onClick={addNote}> Add </button> {/* Button to trigger addNote function */}
             </div>
             <div>
-            <textarea className={styles.contentInput} 
-            placeholder="Write content here..."
-            value={noteContent}
-            onChange={(e) => setNoteContent(e.target.value)}
-            ></textarea>
-
+                <textarea 
+                    className={styles.contentInput} 
+                    placeholder="Write content here..." // Placeholder text for the content
+                    value={noteContent}
+                    onChange={(e) => setNoteContent(e.target.value)} // Update noteContent on change
+                />
             </div>
         </div>
     );
 }
+

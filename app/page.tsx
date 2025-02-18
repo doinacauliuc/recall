@@ -1,5 +1,4 @@
 "use client";
-
 import styles from "./home.module.css"
 import Navbar from "../components/init-navbar";
 
