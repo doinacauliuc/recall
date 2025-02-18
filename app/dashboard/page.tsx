@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 // Import various page components
 import NoteBrowsingPage from "@/components/pages/notes/notesArchive";
 import AddNotesPage from "@/components/pages/notes/addNotes";
-import FlashcardPage from "@/components/pages/flashcards";
+import FlashcardPage from "@/components/pages/flashcards/flashcards";
 import DashboardPage from "@/components/pages/dashboard";
 import RevisePage from "@/components/pages/revise";
 import Sidenav from "@/components/sidenav";

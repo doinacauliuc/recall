@@ -70,10 +70,6 @@
 
 }
 
-.element{
-    width: 650px;
-}
-
 .card:hover{
     background-color: rgba(255, 255, 255, 0.719);
 }
@@ -84,7 +80,7 @@
 
 .contentInput {
     color: black;
-    background-color: rgba(255, 255, 255, 0.73);
+    background-color: white;
     font-size: 14px;
     padding: 10px;   /* Aggiunge spazio interno per evitare che il testo tocchi i bordi */
     border: 1px solid #ccc;
@@ -115,3 +111,4 @@
     width: 450px;
     border-radius: 16px;
 }
+

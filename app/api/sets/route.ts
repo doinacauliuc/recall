@@ -1,9 +1,9 @@
-// API route for managing courses
+//API route for managing flashcard sets
 
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; // Import the Prisma client instance
 
-// Handle GET request to fetch courses for a specific user
+// Handle GET request to fetch sets for a specific user
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url); // Extract query parameters from the request URL
@@ -14,46 +14,48 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
         }
 
-        // Fetch courses that belong to the given user ID
-        const courses = await prisma.course.findMany({
+        // Fetch sets that belong to the given user ID
+        const sets = await prisma.flashcardSet.findMany({
             where: { user_id: parseInt(userId) }, // Ensure user_id is an integer
-            select: { course_id: true, course_name: true }, // Select only necessary fields
+            select: { set_name: true, set_id:true }, // Select only necessary fields
         });
 
-        return NextResponse.json(courses, { status: 200 }); // Return the courses as JSON
+        return NextResponse.json(sets, { status: 200 }); // Return the sets as JSON
     } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching sets:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
 
-// Handle POST request to create a new course
+
+// Handle POST request to create a new set
 export async function POST(req: Request) {
     try {
-        const { course_name, user_id } = await req.json(); // Parse request body
+        const { set_name, user_id } = await req.json(); // Parse request body
        
         // Validate required fields
-        if (!course_name || !user_id) {
+        if (!set_name || !user_id) {
             return NextResponse.json({ error: "Missing fields" }, { status: 400 });
         }
 
-        // Create a new course in the database
-        const newCourse = await prisma.course.create({
-            data: { course_name, user_id },
+        // Create a new set in the database
+        const newSet = await prisma.flashcardSet.create({
+            data: { set_name, user_id },
         });
 
-        return NextResponse.json(newCourse, { status: 201 }); // Return the newly created course
+        return NextResponse.json(newSet, { status: 201 }); // Return the newly created set
     } catch (error) {
-        console.error("Error adding course:", error);
+        console.error("Error adding set:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
 
-// Handle DELETE request to remove a course
+
+// Handle DELETE request to remove a set
 export async function DELETE(req: Request) {
     try {
         const body = await req.json(); // Parse request body
-        const course_id = Number(body.course_id); // Convert course_id to a number
+        const set_id = Number(body.set_id); // Convert set_id to a number
 
         console.log("Received body:", body);
 
@@ -62,21 +64,21 @@ export async function DELETE(req: Request) {
             return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
         }
 
-        if (course_id === null || course_id === undefined) {
+        if (set_id === null || set_id === undefined) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        // Log the course ID before deleting
-        console.log("Deleting course:", { course_id });
+        // Log the set ID before deleting
+        console.log("Deleting course:", { set_id });
 
-        // Delete the course from the database
-        const deletedCourse = await prisma.course.delete({
-            where: { course_id: course_id },
+        // Delete the set from the database
+        const deletedSet = await prisma.flashcardSet.delete({
+            where: { set_id: set_id },
         });
 
-        return NextResponse.json(deletedCourse, { status: 201 }); // Return deleted course data
+        return NextResponse.json(deletedSet, { status: 201 }); // Return deleted set data
     } catch (error) {
-        console.error("Error deleting note:", error);
+        console.error("Error deleting set:", error);
 
         // Return an error response with appropriate message
         return NextResponse.json(
@@ -85,3 +87,4 @@ export async function DELETE(req: Request) {
         );
     }
 }
+
