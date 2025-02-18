@@ -51,9 +51,13 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
             {/* Render the note details if the note exists */}
             {note ? (
                 <>
-                    <h1 className={styles.title}>{note.note_title}</h1> {/* Display the note title */}
-                    <p className={styles.content}>{note.content}</p> {/* Display the note content */}
-                </>
+                <h1 className={styles.title}>{note.note_title}</h1>
+                {/* Render the content as HTML using dangerouslySetInnerHTML */}
+                <div
+                    className={styles.content}
+                    dangerouslySetInnerHTML={{ __html: note.content }} // Inject HTML content
+                />
+            </>
             ) : (
                 // If the note is not found, show this message
                 <p>Note not found</p>

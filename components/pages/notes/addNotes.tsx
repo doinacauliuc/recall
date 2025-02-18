@@ -2,8 +2,12 @@
 
 import { useUser } from "@/app/hooks/userContext"; // Import custom hook to access user context
 import styles from "@/components/styles/pages.module.css"; // Import the CSS module for styling
-import { useEffect, useState } from "react"; // Import React hooks
+import { useEffect, useState, useRef} from "react"; // Import React hooks
+import Quill from "quill"; // Import Quill
+import 'quill/dist/quill.bubble.css'; // Import Quill's snow theme CSS
 
+
+        
 export default function AddNotesPage() {
     // State variables for managing note title, content, error messages, loading status, selected course, and fetched courses
     const [noteTitle, setNoteTitle] = useState(""); // For storing the title of the note
@@ -14,6 +18,36 @@ export default function AddNotesPage() {
     const [courses, setCourses] = useState<{ course_id: number; course_name: string }[]>([]); // For storing the list of courses
     const { user } = useUser(); // Access user context to get the logged-in user's data
     const userId = user?.id; // Get the user ID from the context
+    const [quillInstance, setQuillInstance] = useState<Quill | null>(null); // State to store the Quill instance
+
+
+   // Use the specific HTMLDivElement type for the ref
+   const quillRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (quillRef.current && !(quillRef.current as any).__initialized) {
+            console.log("Initializing Quill editor");
+
+            // Mark the editor as initialized to prevent reinitialization
+            (quillRef.current as any).__initialized = true;
+
+            const quill = new Quill(quillRef.current, {
+                theme: "bubble",
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                    ],
+                },
+            });
+
+            // Set the Quill instance to the state
+            setQuillInstance(quill);
+
+            quill.on("text-change", () => {
+                setNoteContent(quill.root.innerHTML); // Update the note content 
+            });
+        }
+    }, []); // Empty dependency array ensures it only runs once
 
     // Function to handle adding a new note
     const addNote = async () => {
@@ -40,9 +74,11 @@ export default function AddNotesPage() {
                 throw new Error("Failed to add note.");
             }
 
-            const newNote = await res.json(); // Parse the response to get the new note data
             setNoteTitle(""); // Reset note title input after successful creation
             setNoteContent(""); // Reset note content input
+            if (quillInstance) {
+                quillInstance.setText(''); // Clear the text in the editor
+            }
             console.log("New note created") // Log successful note creation
         } catch (err) {
             console.error("Error adding note:", err); // Log error to the console
@@ -72,7 +108,7 @@ export default function AddNotesPage() {
     return (
         <div className={styles.pageContainer}> {/* Main container for the page */}
             <h1 className={styles.title}>Add Note</h1> {/* Page title */}
-            <div className={styles.inputContainer}> {/* Container for note title and course selector */}
+            <div className={styles.noteInputContainer}> {/* Container for note title and course selector */}
                 <input
                     type="text"
                     placeholder="New note title" // Placeholder text
@@ -83,7 +119,7 @@ export default function AddNotesPage() {
                 <select
                     value={selectedCourse ?? ""} // If no course is selected, display an empty value
                     onChange={(e) => setSelectedCourse(Number(e.target.value))} // Update selectedCourse on change
-                    className={styles.input} // Apply styling from CSS module
+                    className={styles.selectInput} // Apply styling from CSS module
                 >
                     <option value="" disabled className={styles.select}>Select course</option> {/* Disabled placeholder option */}
                     {courses.map((course) => (
@@ -95,12 +131,14 @@ export default function AddNotesPage() {
                 <button className={styles.button} onClick={addNote}> Add </button> {/* Button to trigger addNote function */}
             </div>
             <div>
-                <textarea 
-                    className={styles.contentInput} 
-                    placeholder="Write content here..." // Placeholder text for the content
-                    value={noteContent}
-                    onChange={(e) => setNoteContent(e.target.value)} // Update noteContent on change
-                />
+                <div 
+                    ref={quillRef} 
+                    style={{
+                        height: '500px',
+                        width: '900px',
+                    }}
+                    className={styles.contentInput}
+                /> {/* Quill editor container */}
             </div>
         </div>
     );

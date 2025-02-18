@@ -83,10 +83,9 @@
 }
 
 .contentInput {
-    width: 850px;
-    height: 500px;
     color: black;
-    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.73);
+    font-size: 14px;
     padding: 10px;   /* Aggiunge spazio interno per evitare che il testo tocchi i bordi */
     border: 1px solid #ccc;
     border-radius: 5px; /* Angoli arrotondati */
@@ -94,10 +93,25 @@
     outline: none; /* Rimuove il bordo blu quando si clicca dentro */
 }
 
+.noteInputContainer{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    width: 900px;
+}
+
+.selectInput{
+    padding: 20px;
+    color:black;
+    font-size: 14px;
+    width: 250px;
+    border-radius: 16px;
+}
+
 .titleInput {
     padding: 20px;
     color:black;
-    font-size: 15px;
-    width: 600px;
+    font-size: 14px;
+    width: 450px;
     border-radius: 16px;
 }
