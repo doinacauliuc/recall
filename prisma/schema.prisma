@@ -8,27 +8,31 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  email    String @unique
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String   @unique
   password String
-  courses Course[]
+  courses  Course[]
 }
 
 model Course {
-  course_id   Int       @id @default(autoincrement())
-  course_name String
+  course_id     Int      @id @default(autoincrement())
   creation_date DateTime @default(now())
-  user_id    Int
-  user       User    @relation(fields: [user_id], references: [id])
-  notes    Note[]
+  user_id       Int
+  course_name   String
+  user          User     @relation(fields: [user_id], references: [id])
+  notes         Note[]
+
+  @@index([user_id], map: "Course_user_id_fkey")
 }
 
 model Note {
-  note_id   Int       @id @default(autoincrement())
-  note_title String
-  content    String
+  note_id       Int      @id @default(autoincrement())
+  note_title    String   @db.Text
+  content       String   @db.Text
   creation_date DateTime @default(now())
-  course_id   Int
-  course      Course   @relation(fields: [course_id], references: [course_id])
+  course_id     Int
+  course        Course   @relation(fields: [course_id], references: [course_id])
+
+  @@index([course_id], map: "Note_course_id_fkey")
 }

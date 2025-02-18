@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import NotesPage from "@/components/pages/notes";
+import NoteBrowsingPage from "@/components/pages/notes/notesArchive";
+import AddNotesPage from "@/components/pages/notes/addNotes";
 import FlashcardPage from "@/components/pages/flashcards";
 import DashboardPage from "@/components/pages/dashboard";
 import RevisePage from "@/components/pages/revise";
@@ -19,7 +20,8 @@ export default function Dashboard() {
 
   const pages: { [key: string]: JSX.Element } = {
     dashboard: <DashboardPage />,
-    notes: <NotesPage />,
+    viewNotes: <NoteBrowsingPage />,
+    addNotes: <AddNotesPage/>,
     flashcards: <FlashcardPage />,
     revise: <RevisePage />
   };

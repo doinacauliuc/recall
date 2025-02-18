@@ -12,7 +12,7 @@ export default function useAuth() {
     useEffect(() => {
         async function fetchUser() {
             try {
-                const res = await fetch("/api/auth/me");
+                const res = await fetch("/api/auth/user");
                 if (!res.ok) {
                     setUser(null);
                     console.log("User not found");

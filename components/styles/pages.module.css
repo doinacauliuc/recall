@@ -2,27 +2,31 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+        gap: 1rem;
     padding: 1rem;
+    justify-items: center;
 
 }
 
 .title{
     font-size: 3rem;
+    text-align: center;
     font-family: 'Roboto', sans-serif;
+    font-weight: 500;
 }
 
 .inputContainer{
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    width: 700px;
 }
 
 .button {
-    width: 14rem;
+    width: 240px;
     padding: 8px;
     border: none;
-    border-radius: 8px;
+    border-radius: 16px;
     font-size: 14px;
     font-family: 'Open Sans', sans-serif;
     cursor: pointer;
@@ -41,24 +45,59 @@
 .input{
     padding: 20px;
     color:black;
-    width: 400px;
+    font-size: 15px;
+    width: 450px;
     border-radius: 16px;
 }
 
 .cardsContainer{
     display: flex;
+    width: 850px;
     flex-direction: column;
     gap: 1rem;
 }
 
 .card{
     padding: 1rem;
-    width: 40rem;
+    width: 700px;
     background-color: rgba(255, 255, 255, 0.349);
-    color: black;
+    color: white;
+    font-weight: bold;
     border-radius: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+.element{
+    width: 650px;
 }
 
 .card:hover{
     background-color: rgba(255, 255, 255, 0.719);
+}
+
+.select {
+    width: 2rem;
+}
+
+.contentInput {
+    width: 850px;
+    height: 500px;
+    color: black;
+    font-size: 16px;
+    padding: 10px;   /* Aggiunge spazio interno per evitare che il testo tocchi i bordi */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Angoli arrotondati */
+    resize: none; /* Disabilita il ridimensionamento */
+    outline: none; /* Rimuove il bordo blu quando si clicca dentro */
+}
+
+.titleInput {
+    padding: 20px;
+    color:black;
+    font-size: 15px;
+    width: 600px;
+    border-radius: 16px;
 }

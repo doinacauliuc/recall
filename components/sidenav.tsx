@@ -1,6 +1,6 @@
 "use client";
 import styles from './styles/sidernav.module.css'
-import { LayoutDashboard, NotebookText, CreditCard, MessageSquareText, Settings } from 'lucide-react';
+import { LayoutDashboard, NotebookText, CreditCard, MessageSquareText, Settings, PencilLine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 
@@ -23,9 +23,13 @@ export default function Sidenav({ setActivePage }: { setActivePage: (page: strin
                     <LayoutDashboard />
                     <h1>Dashboard</h1>
                 </div>
-                <div className={styles.pagelink} onClick={() => setActivePage("notes")}>
+                <div className={styles.pagelink} onClick={() => setActivePage("viewNotes")}>
                     <NotebookText />
-                    <h1>Notes</h1>
+                    <h1>Browse Notes</h1>
+                </div>
+                <div className={styles.pagelink} onClick={() => setActivePage("addNotes")}>
+                    <PencilLine />
+                    <h1>Add Notes</h1>
                 </div>
                 <div className={styles.pagelink} onClick={() => setActivePage("flashcards")}>
                     <CreditCard />

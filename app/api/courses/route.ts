@@ -41,4 +41,40 @@ export async function POST(req: Request) {
     }
 }
 
+export async function DELETE(req: Request) {
+    try {
+        const body = await req.json();
+        const course_id = Number(body.course_id);
+
+        console.log("Received body:", body);
+
+        // Validate body fields
+        if (!body || typeof body !== "object") {
+            return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+        }
+
+
+        if (course_id === null || course_id === undefined) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        };
+
+        // Log Prisma query before executing
+        console.log("Deleting course:", { course_id });
+
+
+        const deletedNote = await prisma.course.delete({
+            where: { course_id: course_id},
+        });
+        
+        return NextResponse.json(deletedNote, { status: 201 });
+    } catch (error) {
+        console.error("Error deleting note:", error);
+
+        // Ensure error messages are returned properly
+        return NextResponse.json(
+            { error: error instanceof Error ? error.message : "Internal Server Error" },
+            { status: 500 }
+        );
+    }
+}
 
