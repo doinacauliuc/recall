@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"; // React hooks for managing state and lifecycle
 import styles from "@/components/styles/pages.module.css"; // Import custom CSS module for styling
+import { BookText, WalletCards } from 'lucide-react';
 
 // Define the types for the props the component expects
 interface NoteDetailPageProps {
@@ -62,6 +63,14 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
                 // If the note is not found, show this message
                 <p>Note not found</p>
             )}
+            <div className={styles.optionsContainer}>
+            <button className={styles.optionButton}> 
+                <BookText />
+            </button>
+            <button className={styles.optionButton}> 
+                <WalletCards />
+            </button>
+            </div>
         </div>
     );
 }
