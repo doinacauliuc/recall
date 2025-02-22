@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
             // Fetch a specific note by note_id (including content)
             const note = await prisma.note.findUnique({
                 where: { note_id: parseInt(note_id) },
-                select: { note_title: true, content: true }, // Include note title and content
+                select: { note_title: true, content: true, course_id: true }, // Include note title and content
             });
 
             if (!note) {

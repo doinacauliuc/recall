@@ -13,6 +13,7 @@
     text-align: center;
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
+    max-width: 900px;
 }
 
 .inputContainer{
@@ -22,9 +23,27 @@
     width: 700px;
 }
 
+.buttonContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.optionsContainer{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.element{
+    width: 650px;
+}
+
+
 .button {
     width: 240px;
-    padding: 8px;
+    padding: 10px;
     border: none;
     border-radius: 16px;
     font-size: 14px;
@@ -112,20 +131,6 @@
     border-radius: 16px;
 }
 
-.optionButton{
-    display: flex;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-}
 
-.optionButton:hover{
-    transform: translateY(-2px);
-}
 
-.optionsContainer{
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-}
+

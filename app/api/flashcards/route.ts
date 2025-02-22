@@ -46,7 +46,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        // Create a new note in the database
+        // Create a new flashcard in the database
         const newFlashcard = await prisma.flashcard.create({
             data: {
                 question,

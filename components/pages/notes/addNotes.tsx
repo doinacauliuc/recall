@@ -35,9 +35,11 @@ export default function AddNotesPage() {
                 theme: "bubble",
                 modules: {
                     toolbar: [
-                        ['bold', 'italic', 'underline'],
+                      ['bold', 'italic', 'underline'], // Basic styling options
+                      [{ 'list': 'bullet' }, { 'list': 'ordered' }], // Bullet and numbered lists
+                      [{ 'size': ['small', 'medium', 'large', 'huge'] }] // Font size options
                     ],
-                },
+                  },
             });
 
             // Set the Quill instance to the state
@@ -134,7 +136,8 @@ export default function AddNotesPage() {
                 <div 
                     ref={quillRef} 
                     style={{
-                        height: '500px',
+                        height: 'auto',
+                        minHeight: '500px',
                         width: '900px',
                     }}
                     className={styles.contentInput}
