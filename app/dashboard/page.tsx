@@ -13,6 +13,7 @@ import Sidenav from "@/components/sidenav";
 import Navbar from "@/components/navbar";
 import styles from "./dashboard.module.css";
 
+
 // Import the session check function
 import { sessionCheck } from "@/app/hooks/sessionCheck";
 import { JSX } from "react/jsx-runtime";
@@ -73,6 +74,7 @@ export default function Dashboard() {
         {/* Render the active page or default to the Dashboard */}
         {pages[activePage] || <DashboardPage />}
       </div>
+      
     </div>
   );
 }

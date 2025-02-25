@@ -61,4 +61,3 @@ model Flashcard {
   @@index([set_id], map: "Flashcard_set_id_fkey")
 }
 
-

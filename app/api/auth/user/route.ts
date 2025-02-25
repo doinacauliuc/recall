@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
     try {
         // Read the token from cookies
         const token = req.cookies.get("token")?.value;
+        console.log("Token ricevuto:", token);
 
         // If the token is missing, return an unauthorized response
         if (!token) {
