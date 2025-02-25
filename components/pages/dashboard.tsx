@@ -1,15 +1,17 @@
 import styles from '@/components/styles/pages.module.css'
 import Link from "next/link";
+import { useUser } from '@/app/hooks/userContext';
 
 export default function DashboardPage() {
+ const { user } = useUser();
+
     return (
         <div className={styles.pageContainer}>
-            <h1 className= {styles.title}>Dashboard Page</h1>
             <div className={styles.homeContainer}>
 
 <div className={styles.helloContainer}>
     <div className={styles.hello}>Hello,</div>
-    <div className={styles.hello}>User</div>   
+    <div className={styles.hello}>{user?.username}</div>   
 </div>
 
 <div className={styles.homeContainer2}>
