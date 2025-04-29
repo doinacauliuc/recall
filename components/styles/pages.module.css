@@ -79,7 +79,7 @@
 .card{
     padding: 1rem;
     width: 700px;
-    background-color: rgba(255, 255, 255, 0.349);
+    background-color: rgba(255, 255, 255, 0.15);
     color: white;
     font-weight: bold;
     border-radius: 16px;
@@ -90,7 +90,8 @@
 }
 
 .card:hover{
-    background-color: rgba(255, 255, 255, 0.719);
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.02);
 }
 
 .select {

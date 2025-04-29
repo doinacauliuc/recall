@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "Set ID is required" }, { status: 400 });
         }
 
-        // Fetch courses that belong to the given user ID
+        // Fetch sets that belong to the given user ID
         const flashcards = await prisma.flashcard.findMany({
             where: { set_id: parseInt(setID) }, // Ensure user_id is an integer
             select: { flashcard_id: true, question: true, answer: true }, // Select only necessary fields

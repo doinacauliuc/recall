@@ -31,6 +31,7 @@ model Note {
   note_id       Int      @id @default(autoincrement())
   note_title    String   @db.Text
   content       String   @db.Text
+  last_opened   DateTime @default(now())
   creation_date DateTime @default(now())
   course_id     Int
   course        Course   @relation(fields: [course_id], references: [course_id])
@@ -43,9 +44,11 @@ model FlashcardSet {
   set_id       Int        @id @default(autoincrement())
   set_name     String
   creation_date DateTime  @default(now())
+  last_opened   DateTime @default(now())
   user_id       Int
   user          User     @relation(fields: [user_id], references: [id])
   flashcards   Flashcard[]
+  deleted       Boolean  @default(false) // Flag to mark if the note is deleted 
 
   @@index([user_id], map: "FlashcardSet_user_id_fkey")
 }
@@ -54,10 +57,10 @@ model Flashcard {
   flashcard_id Int      @id @default(autoincrement())
   question     String   @db.Text
   answer       String   @db.Text
+  knowledge    Int      @default(0) //level of knowledge of a flashcard
   creation_date DateTime @default(now())
   set_id       Int
   flashcardSet FlashcardSet @relation(fields: [set_id], references: [set_id])
 
   @@index([set_id], map: "Flashcard_set_id_fkey")
 }
-
