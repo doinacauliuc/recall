@@ -14,10 +14,11 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "Set ID is required" }, { status: 400 });
         }
 
-        // Fetch sets that belong to the given user ID
+        // Fetch flashcards that belong to the given set ID
         const flashcards = await prisma.flashcard.findMany({
             where: { set_id: parseInt(setID) }, // Ensure user_id is an integer
-            select: { flashcard_id: true, question: true, answer: true }, // Select only necessary fields
+            select: { flashcard_id: true, question: true, answer: true, knowledge: true}, // Select only necessary fields
+            orderBy: { knowledge: 'asc' }, // Order by flashcard ID in ascending order
         });
 
         return NextResponse.json(flashcards, { status: 200 }); // Return the courses as JSON
