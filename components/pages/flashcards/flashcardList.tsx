@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"; // Import React hooks for state management and side effects
 import styles from "@/components/styles/flashcards.module.css"; // Import CSS styles for the component
-import { Trash2 } from "lucide-react";
+import { Trash2, ThumbsUp, ThumbsDown  } from "lucide-react";
 
 
 // Define the type for a flashcard
@@ -139,13 +139,26 @@ export default function FlashcardListPage({ set, onBack }: FlashcardListProps) {
                             <h2 className={styles.element}
                             onClick={() => toggleAnswer(flashcard.flashcard_id)}
                             >{flashcard?.question}</h2> {/* Display question*/}
-                            <Trash2 />
+                            <button className={styles.actionButton} /*onClick={() => deleteNote(note?.note_id)}*/>
+                                <Trash2 /> 
+                            </button>
+                            </div>
+                            {visibleAnswers[flashcard.flashcard_id] && (
+                                <div className={styles.card}>
+                                    <h2 className={styles.element}>{flashcard?.answer}</h2>
+                                    <div className={styles.knowButtonContainer}>
+                                        <button className={styles.actionButton} /*onClick={() => deleteNote(note?.note_id)}*/>
+                                            <ThumbsUp />
+                                        </button>
+                                        <button className={styles.actionButton} /*onClick={() => deleteNote(note?.note_id)}*/>
+                                            <ThumbsDown />
+                                        </button>
+                                    </div>
+                                </div>
+
+                            )}
                         </div>
-                        {visibleAnswers[flashcard.flashcard_id] && (
-                            <h2 className={styles.element}>{flashcard?.answer}</h2>
-                        )}
-                        </div>
-                        
+
                     ))
                 ) : (
                     // If no flashcards are available, display a message

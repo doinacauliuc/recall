@@ -7,6 +7,7 @@ import NoteDetailPage from "./noteDetail"; // Import the NoteDetailPage componen
 
 export default function NoteBrowsingPage() {
     // Define state variables to manage the active page and selected course/note
+
     const [activePage, setActivePage] = useState<"courses" | "notes" | "noteDetail">("courses"); // Default active page is "courses"
     const [selectedCourse, setSelectedCourse] = useState<{ course_name: string; course_id: number } | null>(null); // Track the selected course
     const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null); // Track the selected note ID
