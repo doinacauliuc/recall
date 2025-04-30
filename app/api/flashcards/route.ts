@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
         // Fetch flashcards that belong to the given set ID
         const flashcards = await prisma.flashcard.findMany({
             where: { set_id: parseInt(setID) }, // Ensure user_id is an integer
-            select: { flashcard_id: true, question: true, answer: true, knowledge: true}, // Select only necessary fields
-            orderBy: { knowledge: 'asc' }, // Order by flashcard ID in ascending order
+            select: { flashcard_id: true, question: true, answer: true}, // Select only necessary fields
+            
         });
 
         return NextResponse.json(flashcards, { status: 200 }); // Return the courses as JSON
@@ -57,6 +57,64 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json(newFlashcard, { status: 201 }); // Return the newly created note
+    } catch (error) {
+        console.error("Error creating flashcard:", error);
+
+        // Return appropriate error response
+        return NextResponse.json(
+            { error: error instanceof Error ? error.message : "Internal Server Error" },
+            { status: 500 }
+        );
+    }
+}
+
+// Handle PUT request to update knowledge's flashcard
+export async function PUT(req: Request) {
+    try {
+        const body = await req.json(); // Parse request body
+        const flashcard_id = Number(body.flashcard_id);
+        const option = String(body.option);
+
+
+        console.log("Received body:", body);
+
+        // Validate required fields
+        if (!body || typeof body !== "object") {
+            return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+        }
+
+        if ( option == "inc"){
+            // Increment knowledge in the database
+        const incKnowledge = await prisma.flashcard.updateMany({
+            where: {
+                flashcard_id: flashcard_id
+            },
+            data: {
+                knowledge: {
+                  increment: 1,
+                }
+            }
+        });
+        }
+        else{
+            if ( option == "dec"){
+                // Decrement knowledge in the database
+            const decKnowledge = await prisma.flashcard.updateMany({
+                where: {
+                    flashcard_id: flashcard_id
+                },
+                data: {
+                    knowledge: {
+                      decrement: 1,
+                    }
+                }
+            });
+        
+        
+        }
+    }
+
+        return NextResponse.json({ status: 201 }); // Return success 
     } catch (error) {
         console.error("Error creating flashcard:", error);
 

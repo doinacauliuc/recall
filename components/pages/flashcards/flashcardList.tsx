@@ -10,6 +10,7 @@ export type Flashcard = {
     flashcard_id: number; // Unique identifier for the flashcard
     question: string;
     answer: string;
+    knowledge: number;
 } | null; // Allow null 
 
 // Define the props the NotesListPage component expects
@@ -96,6 +97,66 @@ export default function FlashcardListPage({ set, onBack }: FlashcardListProps) {
             setLoading(false); // Set loading to false after the operation is complete
         }
     };
+
+    const incKnowledge = async (flashcard_id: number) => {      
+        // Set loading state to true and clear previous errors
+        setLoading(true);
+        
+
+        try {
+            // Send a PUT request to change the knowledge to the database
+            const res = await fetch("/api/flashcards", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({option: "inc", flashcard_id: flashcard_id }),
+            });
+
+            console.log(res);
+            // If the request fails, throw an error
+            if (!res.ok) {
+                throw new Error("Failed to increment knowledge.");
+            }
+
+            
+            console.log("knowledge incremented") // Log successful note creation
+        } catch (err) {
+            console.error("Error incrementing knowledge:", err); // Log error to the console
+            setError("Failed to increment knowledge."); // Display an error message
+        } finally {
+            setLoading(false); // Set loading to false after the operation is complete
+        }
+    };
+
+    const decKnowledge = async (flashcard_id: number) => {      
+        // Set loading state to true and clear previous errors
+        setLoading(true);
+        
+
+        try {
+            // Send a PUT request to change the knowledge to the database
+            const res = await fetch("/api/flashcards", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({option: "dec", flashcard_id: flashcard_id }),
+            });
+
+            console.log(res);
+            // If the request fails, throw an error
+            if (!res.ok) {
+                throw new Error("Failed to decrement knowledge.");
+            }
+
+            
+            console.log("knowledge decremented") // Log successful decrement knowledge
+        } catch (err) {
+            console.error("Error decrementing knowledge:", err); // Log error to the console
+            setError("Failed to decrement knowledge."); // Display an error message
+        } finally {
+            setLoading(false); // Set loading to false after the operation is complete
+        }
+    };
+
+
     return (
         <div className={styles.pageContainer}>
             {/* Button to navigate back to the Courses page */}
@@ -147,10 +208,10 @@ export default function FlashcardListPage({ set, onBack }: FlashcardListProps) {
                                 <div className={styles.card}>
                                     <h2 className={styles.element}>{flashcard?.answer}</h2>
                                     <div className={styles.knowButtonContainer}>
-                                        <button className={styles.actionButton} /*onClick={() => deleteNote(note?.note_id)}*/>
+                                        <button className={styles.actionButton} onClick={() => incKnowledge(flashcard?.flashcard_id)}>
                                             <ThumbsUp />
                                         </button>
-                                        <button className={styles.actionButton} /*onClick={() => deleteNote(note?.note_id)}*/>
+                                        <button className={styles.actionButton} onClick={() => decKnowledge(flashcard?.flashcard_id)}>
                                             <ThumbsDown />
                                         </button>
                                     </div>
