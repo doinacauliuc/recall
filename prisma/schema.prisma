@@ -57,7 +57,7 @@ model Flashcard {
   flashcard_id Int      @id @default(autoincrement())
   question     String   @db.Text
   answer       String   @db.Text
-  knowledge    Int      @default(0) //level of knowledge of a flashcard
+  knowledge_level   Int      @default(0) //level of knowledge of a flashcard
   creation_date DateTime @default(now())
   set_id       Int
   flashcardSet FlashcardSet @relation(fields: [set_id], references: [set_id])

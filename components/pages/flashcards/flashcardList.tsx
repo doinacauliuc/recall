@@ -11,6 +11,7 @@ export type Flashcard = {
     question: string;
     answer: string;
     knowledge: number;
+    knowledge_level: number;
 } | null; // Allow null 
 
 // Define the props the NotesListPage component expects

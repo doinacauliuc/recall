@@ -1,14 +1,19 @@
-import styles from '@/components/styles/pages.module.css';
+import styles from '@/components/styles/review.module.css';
 import { useState, useEffect } from 'react';
 import { useUser } from '@/app/hooks/userContext';
 
-export default function RevisePage() {
+// Define the type for the props the component expects
+interface RevisionSetupPageProps {
+    onNoteSelect: (note_id: number) => void; // Function to handle note selection
+}
+
+export default function revisionSetupPage({ onNoteSelect }: RevisionSetupPageProps) {
     const [courses, setCourses] = useState<{ course_id: number; course_name: string }[]>([]); // For storing the list of courses
-    const [notes, setNotes] = useState<{note_id: number; note_title: string} [] >([]); // State to hold the list of notes
+    const [notes, setNotes] = useState<{ note_id: number; note_title: string }[]>([]); // State to hold the list of notes
     const { user } = useUser();
     const userId = user?.id; // Get the user ID from the context
     const [selectedCourse, setSelectedCourse] = useState<number | null>(null); // For storing the selected course ID
-
+    const [note, setNote] = useState<{ note_title: string; note_id: number } | null>(null); // State to store the note data
 
     // Function to fetch courses associated with the user
     const fetchCourses = async () => {
@@ -51,33 +56,43 @@ export default function RevisePage() {
 
     return (
         <div className={styles.pageContainer}>
-            <h1 className={styles.title}>{user?.username}</h1>
-
-            <select
-                value={selectedCourse ?? ""} // If no course is selected, display an empty value
-                onChange={(e) => setSelectedCourse(Number(e.target.value))} // Update selectedCourse on change
-                className={styles.selectInput} // Apply styling from CSS module
-            >
-                <option value="" disabled className={styles.select}>Select course</option> {/* Disabled placeholder option */}
-                {courses.map((course) => (
-                    <option key={course.course_id} value={course.course_id}>
-                        {course.course_name} {/* Display each course as an option */}
-                    </option>
-                ))}
-            </select>
-
+           <h1 className={styles.title}> Revise with Recall assistant </h1> 
+            <div className={styles.selectContainer}>
+                <div className={styles.card}>
+                <h2> Choose a subject to review </h2>
+                <select
+                    value={selectedCourse ?? ""} // If no course is selected, display an empty value
+                    onChange={(e) => setSelectedCourse(Number(e.target.value))} // Update selectedCourse on change
+                    className={styles.selectInput} // Apply styling from CSS module
+                >
+                    <option value="" disabled className={styles.select}>Select course</option> {/* Disabled placeholder option */}
+                    {courses.map((course) => (
+                        <option key={course.course_id} value={course.course_id}>
+                            {course.course_name} {/* Display each course as an option */}
+                        </option>
+                    ))}
+                </select>
+            
+            <h2> Choose a topic: </h2>
             <select
                 //value={selectedCourse ?? ""} // If no course is selected, display an empty value
                 //onChange={(e) => setSelectedCourse(Number(e.target.value))} // Update selectedCourse on change
                 className={styles.selectInput} // Apply styling from CSS module
+                onChange={(e) => setNote(Number(e.target.value))} // Update selectedCourse on change
             >
-                <option value=""  className={styles.select}>Select note</option> {/* Disabled placeholder option */}
+                <option value="" >Select note</option> {/* Disabled placeholder option */}
                 {notes.map((note) => (
                     <option key={note.note_id} value={note.note_id}>
                         {note.note_title} {/* Display each course as an option */}
                     </option>
                 ))}
             </select>
+            <button className={styles.button}  onClick={() => note && onNoteSelect(note.note_id)}>Start Revising</button>
+            </div>
+            </div>
+
+
+            
         </div>
     );
 }

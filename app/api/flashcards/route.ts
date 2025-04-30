@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
         // Fetch flashcards that belong to the given set ID
         const flashcards = await prisma.flashcard.findMany({
             where: { set_id: parseInt(setID) }, // Ensure user_id is an integer
-            select: { flashcard_id: true, question: true, answer: true}, // Select only necessary fields
-            
+            select: { flashcard_id: true, question: true, answer: true, knowledge_level: true }, // Select only necessary fields
+            orderBy: { knowledge_level: "asc" }, // Order by flashcard knowledge level in ascending order
         });
 
         return NextResponse.json(flashcards, { status: 200 }); // Return the courses as JSON
@@ -90,7 +90,7 @@ export async function PUT(req: Request) {
                 flashcard_id: flashcard_id
             },
             data: {
-                knowledge: {
+                knowledge_level: {
                   increment: 1,
                 }
             }
@@ -104,7 +104,7 @@ export async function PUT(req: Request) {
                     flashcard_id: flashcard_id
                 },
                 data: {
-                    knowledge: {
+                    knowledge_level: {
                       decrement: 1,
                     }
                 }

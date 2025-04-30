@@ -2,10 +2,8 @@
 
 import { useEffect, useState, useRef } from "react"; // React hooks for managing state and lifecycle
 import styles from "@/components/styles/pages.module.css"; // Import custom CSS module for styling
-import { BookText, WalletCards } from 'lucide-react';
 import LoadingPage from "@/components/loadingPage";
-import { useUser } from "@/app/hooks/userContext";
-import DOMPurify from 'dompurify';
+import { useUser } from "@/app/hooks/userContext"; // Custom hook to get user context
 import Quill from "quill"; // Import Quill
 import 'quill/dist/quill.bubble.css'; // Import Quill's snow theme CSS
 
@@ -25,7 +23,7 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
 
 
     // Use the specific HTMLDivElement type for the ref
-   const quillRef = useRef<HTMLDivElement | null>(null);
+    const quillRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (quillRef.current && !(quillRef.current as any).__initialized) {
@@ -38,11 +36,11 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
                 theme: "bubble",
                 modules: {
                     toolbar: [
-                      ['bold', 'italic', 'underline'], // Basic styling options
-                      [{ 'list': 'bullet' }, { 'list': 'ordered' }], // Bullet and numbered lists
-                      [{ 'size': ['small', 'medium', 'large', 'huge'] }] // Font size options
+                        ['bold', 'italic', 'underline'], // Basic styling options
+                        [{ 'list': 'bullet' }, { 'list': 'ordered' }], // Bullet and numbered lists
+                        [{ 'size': ['small', 'medium', 'large', 'huge'] }] // Font size options
                     ],
-                  },
+                },
                 readOnly: true,
             });
 
@@ -56,7 +54,7 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
         }
     }, [note]); // Empty dependency array ensures it only runs once
 
-    
+
 
     // Fetch the note based on the note_id passed via props
     useEffect(() => {
@@ -93,20 +91,20 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
             const res = await fetch("/api/summarize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    note_title: note?.note_title, 
-                    content: note?.content, 
-                    course_id: note?.course_id 
+                body: JSON.stringify({
+                    note_title: note?.note_title,
+                    content: note?.content,
+                    course_id: note?.course_id
                 }),
             });
-    
+
             if (!res.ok) {
                 throw new Error(`Failed to fetch summary: ${res.statusText}`);
             }
             else {
                 alert("Summary has been added to course notes");
             }
-    
+
             const data = await res.json();
             setLoading(false);
 
@@ -119,23 +117,23 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
     const createFlashcards = async () => {
         setLoading(true);
         try {
-            const res = await fetch("/api/create_flashcards", {
+            const res = await fetch("/api/generate_flashcards", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    note_title: note?.note_title, 
+                body: JSON.stringify({
+                    note_title: note?.note_title,
                     content: note?.content,
                     user_id: user?.id
                 }),
             });
-    
+
             if (!res.ok) {
                 throw new Error(`Failed to create flashcards: ${res.statusText}`);
             }
             else {
                 alert("Flashcard set has been created succesfully");
             }
-    
+
             const data = await res.json();
             setLoading(false);
 
@@ -144,39 +142,36 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
             return null; // Return null in case of an error
         }
     };
-    
-    
+
+
     return (
         <div className={styles.pageContainer}>
             {/* Back button to return to the previous page */}
-            <div className={styles.buttonContainer}>
-            <button onClick={onBack} className={styles.button}>Back to Notes</button>
-            <div className={styles.optionsContainer}>
-                <button className={styles.button} onClick={createSummary}> Create Summary</button>
-                <button className={styles.button} onClick={createFlashcards}> Create Flashcards</button>
-            </div>
 
-            </div>
-            
+            <button onClick={onBack} className={styles.button}>Back to Notes</button>
 
             {/* Render the note details if the note exists */}
             {note ? (
                 <>
-                <h1 className={styles.title}>{note.note_title}</h1>
-                <div 
-                    ref={quillRef} 
-                    style={{
-                        height: 'auto',
-                        width: '950px',
-                    }}
-                    className={styles.contentInput}
-                /> {/* Quill editor container */}
-            </>
+                    <h1 className={styles.title}>{note.note_title}</h1>
+                    <div
+                        ref={quillRef}
+                        style={{
+                            height: 'auto',
+                            width: '950px',
+                        }}
+                        className={styles.contentInput}
+                    /> {/* Quill editor container */}
+                    <div className={styles.buttonContainer}>
+                        <button className={styles.button} onClick={createSummary}> Create Summary</button>
+                        <button className={styles.button} onClick={createFlashcards}> Create Flashcards</button>
+                    </div>
+                </>
             ) : (
                 // If the note is not found, show this message
                 <p>Note not found</p>
             )}
-            
+
         </div>
     );
 }
