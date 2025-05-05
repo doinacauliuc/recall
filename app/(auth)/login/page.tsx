@@ -1,10 +1,11 @@
 
 "use client"; // Ensures this component runs only on the client side.
 
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/(auth)/form.module.css";
 import Link from "next/link";
+import { sessionCheck } from "@/app/hooks/sessionCheck";
 
 
 export const loginUser = async (email: string, password: string, router: ReturnType<typeof useRouter>) => {
@@ -43,9 +44,27 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  // State to track authentication status
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
  
   // Next.js router instance for navigation
   const router = useRouter();
+
+  // useEffect runs once when the component mounts to check user authentication
+  useEffect(() => {
+    async function checkAuth() {
+      const auth = await sessionCheck(); // Call sessionCheck to verify authentication
+      setIsAuthenticated(auth); // Update authentication state
+
+      if (auth) {
+        // Redirect to the dashboard after 2 seconds
+        router.push("/dashboard");
+      }
+    }
+    checkAuth();
+  }, [router]); // Dependency array ensures this runs only when the router changes
+  
+
 
   // Handles form submission for login
   const handleLogin = async (e: React.FormEvent) => {
