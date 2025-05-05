@@ -44,7 +44,13 @@ export default function FlashcardListPage({ set, onBack }: FlashcardListProps) {
         try {
             // Make API request to fetch flashcards associated with the set
             const response = await fetch(`/api/flashcards?set_id=${setID}`);
-            const data = await response.json(); // Parse the response data
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+            const text = await response.text();
+            const data = text ? JSON.parse(text) : [];
+            //const data = await response.json(); // Parse the response data
             setFlashcards(data); // Store the fetched notes in state
         } catch (error) {
             // If an error occurs, log it to the console
@@ -209,10 +215,10 @@ export default function FlashcardListPage({ set, onBack }: FlashcardListProps) {
                                 <div className={styles.card}>
                                     <h2 className={styles.element}>{flashcard?.answer}</h2>
                                     <div className={styles.knowButtonContainer}>
-                                        <button className={styles.actionButton} onClick={() => incKnowledge(flashcard?.flashcard_id)}>
+                                        <button className={styles.actionButton} onClick={() => {incKnowledge(flashcard?.flashcard_id); toggleAnswer(flashcard.flashcard_id);}}>
                                             <ThumbsUp />
                                         </button>
-                                        <button className={styles.actionButton} onClick={() => decKnowledge(flashcard?.flashcard_id)}>
+                                        <button className={styles.actionButton} onClick={() => {decKnowledge(flashcard?.flashcard_id); toggleAnswer(flashcard.flashcard_id);}}>
                                             <ThumbsDown />
                                         </button>
                                     </div>
