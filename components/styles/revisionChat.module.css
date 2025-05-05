@@ -1,0 +1,91 @@
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    width: 1000px;
+    padding: 0;
+    margin: 0;
+    margin-top: 5%;
+}
+
+/* Messages area*/
+.chatWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 1rem;
+    overflow: hidden;
+}
+
+.chatContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem 1rem 1rem; /* extra right padding */    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    scrollbar-width: none;
+    
+}
+
+.botMessage, .userMessage {
+    padding: 0.75rem;
+    border-radius: 12px;
+    max-width: 70%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    color: black;
+    font-size: 0.8rem;
+    
+}
+
+.botMessage {
+    background-color: #f0f0f0;
+    align-self: flex-start;
+}
+
+.userMessage {
+    background-color: #d1e7dd;
+    align-self: flex-end;
+}
+
+/* Input area */
+.inputContainer {
+    display: flex;
+    padding: 1rem 0;
+    gap: 0.5rem;
+    border-top: 1px;
+    width: 1000px;
+}
+
+.input {
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+    max-height: 150px;
+    overflow-y: auto;
+    resize: none;
+    border-radius: 6px;
+    border: 1px;
+    font-size: 0.8rem;
+    color: black;
+    background-color: #fff;
+    width: 80%;
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.input::-webkit-scrollbar {
+    display: none;
+}
+
+.sendButton {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #6c2e51;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}

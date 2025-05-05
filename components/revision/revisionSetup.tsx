@@ -4,16 +4,23 @@ import { useUser } from '@/app/hooks/userContext';
 
 // Define the type for the props the component expects
 interface RevisionSetupPageProps {
-    onNoteSelect: (note_id: number) => void; // Function to handle note selection
+    onNoteSelect: (note: Note | undefined) => void // Function to handle note and option selection
 }
+
+export type Note = {
+    note_id: number; // Unique identifier for the note
+    note_title: string; // Title of the note
+}
+
 
 export default function revisionSetupPage({ onNoteSelect }: RevisionSetupPageProps) {
     const [courses, setCourses] = useState<{ course_id: number; course_name: string }[]>([]); // For storing the list of courses
-    const [notes, setNotes] = useState<{ note_id: number; note_title: string }[]>([]); // State to hold the list of notes
+    const [notes, setNotes] = useState<Note[]>([]); // For storing the list of notes
     const { user } = useUser();
     const userId = user?.id; // Get the user ID from the context
-    const [selectedCourse, setSelectedCourse] = useState<number | null>(null); // For storing the selected course ID
-    const [note, setNote] = useState<{ note_title: string; note_id: number } | null>(null); // State to store the note data
+    const [selectedNote, setSelectedNote] = useState<Note | undefined>(undefined); // State to hold the selected note ID
+    const [selectedCourse, setSelectedCourse] = useState<number | undefined>(undefined); // State to hold the selected course ID
+
 
     // Function to fetch courses associated with the user
     const fetchCourses = async () => {
@@ -61,11 +68,10 @@ export default function revisionSetupPage({ onNoteSelect }: RevisionSetupPagePro
                 <div className={styles.card}>
                 <h2> Choose a subject to review </h2>
                 <select
-                    value={selectedCourse ?? ""} // If no course is selected, display an empty value
                     onChange={(e) => setSelectedCourse(Number(e.target.value))} // Update selectedCourse on change
                     className={styles.selectInput} // Apply styling from CSS module
                 >
-                    <option value="" disabled className={styles.select}>Select course</option> {/* Disabled placeholder option */}
+                    <option value="" >Select course</option> {/* Disabled placeholder option */}
                     {courses.map((course) => (
                         <option key={course.course_id} value={course.course_id}>
                             {course.course_name} {/* Display each course as an option */}
@@ -75,24 +81,31 @@ export default function revisionSetupPage({ onNoteSelect }: RevisionSetupPagePro
             
             <h2> Choose a topic: </h2>
             <select
-                //value={selectedCourse ?? ""} // If no course is selected, display an empty value
-                //onChange={(e) => setSelectedCourse(Number(e.target.value))} // Update selectedCourse on change
                 className={styles.selectInput} // Apply styling from CSS module
-                onChange={(e) => setNote(Number(e.target.value))} // Update selectedCourse on change
+                onChange={(e) => {
+                    const selectedNote = notes.find(note => note.note_id === Number(e.target.value));
+                    setSelectedNote(selectedNote); // Update selectedNote with the selected note object
+                }} // Update selectedNoteID on change
             >
                 <option value="" >Select note</option> {/* Disabled placeholder option */}
                 {notes.map((note) => (
                     <option key={note.note_id} value={note.note_id}>
-                        {note.note_title} {/* Display each course as an option */}
+                        {note.note_title} {/* Display each note as an option */}
                     </option>
                 ))}
             </select>
-            <button className={styles.button}  onClick={() => note && onNoteSelect(note.note_id)}>Start Revising</button>
+            <button className={styles.button}  onClick={() => {
+                if (selectedNote != undefined ) {
+                    onNoteSelect(selectedNote);
+                }
+                else {
+                    alert("Please select a note to proceed.");
+                }
+            }}>
+                Start Revising
+            </button>
             </div>
             </div>
-
-
-            
         </div>
     );
 }

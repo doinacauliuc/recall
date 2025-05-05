@@ -1,15 +1,18 @@
 "use client";
 import { useState } from "react"; // Importing React hook for managing state
 import RevisionSetupPage from "@/components/revision/revisionSetup"; // Importing the revision setup page component
+import RevisionChatPage from "@/components/revision/revisionChat"; // Importing the revision chat page component
+import type { Note } from "@/components/revision/revisionSetup"; // Importing the Note type for TypeScript
 
 export default function RevisePage() {
     const [activePage, setActivePage] = useState<"setup" | "revision">("setup"); // Default active page is "setup"
-    const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null); // Track the selected note ID
-
+    const [selectedNote, setSelectedNote] = useState<Note | undefined>(undefined); // Track the selected note 
+    
     // Function to handle when a note is selected
-    const handleNoteSelect = (note_id: number) => {
-        setSelectedNoteId(note_id); // Set the selected note ID
-        console.log("Selected note ID:", note_id); // Log the selected note ID
+    const handleNoteSelect = (note: Note | undefined ) => {
+        setSelectedNote(note); // Set the selected note ID
+    
+        console.log("Selected note ID:", note); // Log the selected note ID
         setActivePage("revision"); // Change the active page to "noteDetail"
     };
 
@@ -20,9 +23,9 @@ export default function RevisePage() {
                             <RevisionSetupPage onNoteSelect={handleNoteSelect} />
                         )}
           
-            {activePage === "revision" && selectedNoteId !== null &&  (
+            {activePage === "revision" && selectedNote !== undefined  && (
                 // Render the revision page
-                <h1>Revision Page for Note ID: {selectedNoteId} </h1>
+                <RevisionChatPage note={selectedNote} />
             )}
         </div>
     );
