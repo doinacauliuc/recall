@@ -6,13 +6,44 @@ import { useRouter } from "next/navigation";
 import styles from "@/app/(auth)/form.module.css";
 import Link from "next/link";
 
+
+export const loginUser = async (email: string, password: string, router: ReturnType<typeof useRouter>) => {
+ 
+  // Send a POST request to the login API
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+  // Parse the response from the server
+  const data = await res.json();
+
+  // If login is successful
+  if (res.ok) {
+    console.log(data);
+    console.log("Login successful! Redirecting...");
+
+    // Redirect to the dashboard after 2 seconds
+    setTimeout(() => router.push("/dashboard"), 2000);
+  } else {
+    // If login fails, display the error message
+    const errorText = await res.text();
+    throw new Error(errorText || "Login failed");
+  }
+} catch (err) {
+  console.log("An error occurred. Please try again.");
+}
+};
+
 export default function Login() {
   // State variables for email, password, error messages, and success messages
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-
+ 
   // Next.js router instance for navigation
   const router = useRouter();
 
@@ -28,32 +59,13 @@ export default function Login() {
       return;
     }
 
-    // Send a POST request to the login API
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      // Parse the response from the server
-      const data = await res.json();
-
-      // If login is successful
-      if (res.ok) {
-        setMessage("Login successful! Redirecting...");
-        console.log(data);
-        console.log("Login successful! Redirecting...");
-
-        // Redirect to the dashboard after 2 seconds
-        setTimeout(() => router.push("/dashboard"), 2000);
-      } else {
-        // If login fails, display the error message
-        setError(data.error || "Login failed");
-      }
+      await loginUser(email, password, router);
+      setMessage("Login ok");
     } catch (err) {
       setError("An error occurred. Please try again.");
     }
+  
   };
 
   return (

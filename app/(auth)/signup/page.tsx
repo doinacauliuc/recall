@@ -3,6 +3,8 @@
 import { useState } from "react";
 import styles from "@/app/(auth)/form.module.css"; // Import custom CSS for styling
 import Link from "next/link"; // Import Link component for navigation between pages
+import { loginUser } from "../login/page";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   // State variables to manage form data (username, email, password)
@@ -13,6 +15,8 @@ export default function Register() {
   // State variables to handle error and success messages
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+
+  const router = useRouter();
 
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,8 +47,9 @@ export default function Register() {
       const data = await res.json();
 
       if (res.ok) {
-        // If registration is successful, set success message
-        setMessage('Registration successful! Please log in.');
+        // If registration is successful, set success message and redirect to dashboard
+        setMessage('Registration successful! Log in...');
+        loginUser(email,password, router);
       } else {
         // If an error occurred (e.g., username or email already exists), set error message
         setError(data.error || 'An unknown error occurred');
