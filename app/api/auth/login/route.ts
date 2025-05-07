@@ -8,11 +8,6 @@ import jwt from "jsonwebtoken";
 // Read the secret key from environment variables
 const SECRET_KEY: string = process.env.JWT_SECRET!;
 
-// Ensure the secret key is defined, otherwise throw an error
-if (!SECRET_KEY) {
-  throw new Error("JWT_SECRET is not defined in environment variables");
-}
-
 // Function to handle POST requests to the login endpoint
 export async function POST(req: Request) {
   try {
@@ -47,7 +42,7 @@ export async function POST(req: Request) {
     });
 
     // Create a response and set the token in an HTTP-only cookie
-    const response = NextResponse.json({ message: "Login successful" });
+    const response = NextResponse.json({ message: "Login successful" }, { status: 200 });
     response.cookies.set("token", token, {
       httpOnly: true, // Prevents client-side access to the cookie
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production

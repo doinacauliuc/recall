@@ -3,20 +3,41 @@
 import { useState } from "react";
 import styles from "@/app/(auth)/form.module.css"; // Import custom CSS for styling
 import Link from "next/link"; // Import Link component for navigation between pages
-import { loginUser } from "../login/page";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 export default function Register() {
   // State variables to manage form data (username, email, password)
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Next.js router instance for navigation
+    const router = useRouter();
   
   // State variables to handle error and success messages
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const router = useRouter();
+  const login = async () => {
+    // Function to handle user login after successful registration
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // Handle successful login (redirect to dashboard)
+      router.push('/dashboard');
+    } else {
+      // Handle login error
+      setError(data.error || 'Login failed');
+    }
+  }
 
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,9 +68,8 @@ export default function Register() {
       const data = await res.json();
 
       if (res.ok) {
-        // If registration is successful, set success message and redirect to dashboard
-        setMessage('Registration successful! Log in...');
-        loginUser(email,password, router);
+        //login the user in
+        await login();
       } else {
         // If an error occurred (e.g., username or email already exists), set error message
         setError(data.error || 'An unknown error occurred');

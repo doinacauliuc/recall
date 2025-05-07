@@ -30,6 +30,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("user", JSON.stringify(user)); // Save user data to localStorage
       setLocalUser(user); // Update local state with user data
     }
+    else{
+      localStorage.removeItem("user"); // Remove user data from localStorage if user is null
+      setLocalUser(null); // Update local state to null
+    }
   }, [user]); // This effect runs when the 'user' data changes
 
   return (

@@ -30,7 +30,10 @@ export async function POST(req: NextRequest) {
         const prompt = `Generate the next message based on this history:\n\n${JSON.stringify(history, null, 2)}\n\n` +
             `Refer to the note content:\n${note.content}\n` +
             `Use a clean format for the response. If the user is stuck, provide a hint. ` +
-            `If the user doesn't know or does not remember, help them. `;
+            `If the user doesn't know or does not remember, help them. ` +
+            `If the user is doing well, provide positive feedback. ` +
+            `If the user is doing poorly, provide constructive feedback.` +
+            `If the user gives an incomplete answer, try asking them to expand on it. ` ;
 
 
         const result = await model.generateContent(prompt);

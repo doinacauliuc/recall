@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { UserProvider } from "../hooks/userContext";
 
 // Import various page components
 import NoteBrowsingPage from "@/components/pages/notes/notesArchive";
@@ -28,7 +29,7 @@ export default function Dashboard() {
   // Router instance for navigation
   const router = useRouter();
 
-  
+
 
   // Object mapping page names to their respective components
   const pages: { [key: string]: JSX.Element } = {
@@ -45,11 +46,12 @@ export default function Dashboard() {
       const auth = await sessionCheck(); // Call sessionCheck to verify authentication
       setIsAuthenticated(auth); // Update authentication state
 
+
       if (!auth) {
         router.replace("/"); // Redirect to home page if the user is not authenticated
       }
     }
-    checkAuth();
+    checkAuth(); // Call the authentication check function
   }, [router]); // Dependency array ensures this runs only when the router changes
 
   // Prevent rendering any UI until authentication is checked
@@ -64,6 +66,7 @@ export default function Dashboard() {
 
   return (
     <div className={styles.mainContainer}>
+      <UserProvider>
       <div className={styles.componentsContainer}>
         {/* Sidebar for navigation */}
         <Sidenav setActivePage={setActivePage} />
@@ -73,8 +76,9 @@ export default function Dashboard() {
       <div className={styles.contentContainer}>
         {/* Render the active page or default to the Dashboard */}
         {pages[activePage] || <DashboardPage />}
+        
       </div>
-      
+      </UserProvider>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, League_Spartan, Open_Sans} from "next/font/google";
+import { Geist, Geist_Mono, League_Spartan, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@/app/hooks/userContext";
 
@@ -27,9 +27,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider> {children}
-        </UserProvider>
-        
+        {children}
+
+
       </body>
     </html>
   );

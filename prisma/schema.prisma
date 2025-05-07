@@ -14,6 +14,7 @@ model User {
   password String
   courses  Course[]
   flashcardSets FlashcardSet[]
+  chats    Chat[]
 }
 
 model Course {
@@ -36,6 +37,7 @@ model Note {
   course_id     Int
   course        Course   @relation(fields: [course_id], references: [course_id])
   deleted       Boolean  @default(false) // Flag to mark if the note is deleted
+  chats         Chat[]
 
   @@index([course_id], map: "Note_course_id_fkey")
 }
@@ -63,4 +65,17 @@ model Flashcard {
   flashcardSet FlashcardSet @relation(fields: [set_id], references: [set_id])
 
   @@index([set_id], map: "Flashcard_set_id_fkey")
+}
+
+model Chat {
+  chat_id       Int       @id @default(autoincrement())
+  chat_title    String 
+  last_opened   DateTime
+  messages      Json
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [id])
+  note_id       Int
+  note          Note     @relation(fields: [note_id], references: [note_id])
+
+  @@index([user_id, note_id], map: "Chat_user_id_note_id_fkey")
 }

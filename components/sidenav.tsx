@@ -4,16 +4,27 @@ import styles from './styles/sidernav.module.css'; // Import custom CSS for styl
 import { LayoutDashboard, NotebookText, CreditCard, MessageSquareText, Settings, PencilLine } from 'lucide-react'; // Import icons from 'lucide-react' library
 import { useRouter } from 'next/navigation'; // Import useRouter hook for programmatic navigation
 import Link from "next/link"; // Import Link component for navigating between pages
+import useAuth from '@/app/hooks/userData';
+
+
 
 // Sidenav component receives 'setActivePage' as a prop to change the active page in the main content area
 export default function Sidenav({ setActivePage }: { setActivePage: (page: string) => void }) {
     
     const router = useRouter(); // Initialize useRouter to navigate to different routes programmatically
-    
+    const { refetchUser } = useAuth(); // Function to refetch user data from the server
+    const {user} = useAuth(); // Get the current user data from the authentication hook
+
     // Function to handle logout, clears the user session and redirects to the homepage
     const handleLogout = async () => {
         // Call logout API endpoint
-        await fetch("/api/auth/logout", { method: "GET" });
+        const res = await fetch("/api/auth/logout", { method: "GET" });
+        if (!res.ok) {
+            console.error("Logout failed");
+            return;
+        }
+        
+        
         // Redirect the user to the homepage after logout
         router.push("/");
     };

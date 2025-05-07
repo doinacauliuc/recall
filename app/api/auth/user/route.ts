@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
 
         // If user is not found, return an unauthorized response
         if (!user) {
+            console.log("User not found");
             return NextResponse.json({ user: null }, { status: 401 });
         }
     

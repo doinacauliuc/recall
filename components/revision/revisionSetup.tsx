@@ -5,6 +5,7 @@ import { useUser } from '@/app/hooks/userContext';
 // Define the type for the props the component expects
 interface RevisionSetupPageProps {
     onNoteSelect: (note: Note | undefined) => void // Function to handle note and option selection
+    onResumeSelect:() => void;  // Function to handle option selection
 }
 
 export type Note = {
@@ -13,7 +14,7 @@ export type Note = {
 }
 
 
-export default function revisionSetupPage({ onNoteSelect }: RevisionSetupPageProps) {
+export default function revisionSetupPage({ onNoteSelect, onResumeSelect }: RevisionSetupPageProps) {
     const [courses, setCourses] = useState<{ course_id: number; course_name: string }[]>([]); // For storing the list of courses
     const [notes, setNotes] = useState<Note[]>([]); // For storing the list of notes
     const { user } = useUser();
@@ -104,6 +105,9 @@ export default function revisionSetupPage({ onNoteSelect }: RevisionSetupPagePro
             }}>
                 Start Revising
             </button>
+            <hr className={styles.divider}></hr>
+            <button className={styles.button}
+            onClick={onResumeSelect}> Resume previous session</button>
             </div>
             </div>
         </div>

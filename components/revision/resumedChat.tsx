@@ -1,18 +1,12 @@
-
-
 'use client';
-
-
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, use } from 'react';
 import styles from '@/components/styles/revisionChat.module.css';
-import { send } from 'process';
-import { Note } from '@/components/revision/revisionSetup';
-import { useUser } from '@/app/hooks/userContext'; // Importing user context for managing user state
+import { Note } from '@/components/revision/revisionSetup'; // Importing the Note type for TypeScript
 
-interface RevisionChatPageProps {
-    note: Note;
+
+interface ResumedChatPageProps {
+    chat_id: number | undefined; // Chat ID from the user context
     onExit: () => void; // Function to handle going back to the previous page
-    user_id: number | undefined; // User ID from the user context
 }
 
 interface Message {
@@ -20,28 +14,35 @@ interface Message {
     parts: { text: string }[];
 }
 
-export default function RevisionChatPage({ note, onExit, user_id }: RevisionChatPageProps) {
+export default function ResumedChatPage({ chat_id, onExit }: ResumedChatPageProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState<string>(''); // State to manage input value
     const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref to manage the textarea element
     const chatContainerRef = useRef<HTMLDivElement>(null); // Ref to manage the chat container element
     const [isLoading, setIsLoading] = useState(false); // State to manage loading status
 
+    const fetchMessages = async () => {
+        try {
+            // Fetch the chat from the server using the chat ID
+            const response = await fetch(`/api/chat-db?chat_id=${chat_id}`);
+            const data = await response.json();
+            console.log("Fetched messages:", data); // Log the fetched messages
+            //setMessages(data.messages); // Update the messages state with the fetched data
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch chat');
+            }
+        }
+        catch (error) {
+            console.error("Error fetching chat:", error); // Log error if fetching chat fails
+        }
+    }
 
     useEffect(() => {
-        // On mount, add the first bot message
-        let initialText: string = `Hello! I am here to help you with your revision. I will be asking you questions about ${note.note_title} and will assess your answers. Are you ready to start?`;
+        console.log("Chat ID page resumed:", chat_id); // Log the chat ID
+        if (chat_id) fetchMessages(); // Only fetch if chat_id is available
+    }, [chat_id]);
 
-        const initialMessage: Message = {
-            role: 'model',
-            parts: [{ text: initialText }]
-        };
-
-        setMessages([initialMessage]);
-        textareaRef.current?.focus(); // Focus on the textarea when the component mounts
-    }, [note]);
-
-    // Scroll to the bottom of the chat container when new messages are added
     useEffect(() => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -49,16 +50,16 @@ export default function RevisionChatPage({ note, onExit, user_id }: RevisionChat
     }, [messages]);
 
     const SaveAndExit = async () => {
-        // Send a POST request to add the chat to the database
+        // Send a PUR request to add the chat to the database
         const res = await fetch("/api/chat-db", {
-            method: "POST",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({user_id: user_id, chat_title: note.note_title, messages:JSON.stringify(messages)}),
+            body: JSON.stringify({ chat_id: chat_id, messages: messages }),
         });
 
-         // If the request fails, throw an error
-         if (!res.ok) {
-            throw new Error("Failed to add note.");
+        // If the request fails, throw an error
+        if (!res.ok) {
+            throw new Error("Failed to svae chat.");
         }
         onExit();
     }
@@ -81,7 +82,7 @@ export default function RevisionChatPage({ note, onExit, user_id }: RevisionChat
             const res = await fetch('/api/gemini-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ history: updatedMessages, note_id: note.note_id }),
+                body: JSON.stringify({ history: updatedMessages, note_id: note?.note_id }),
             });
 
             const data = await res.json();
@@ -114,7 +115,7 @@ export default function RevisionChatPage({ note, onExit, user_id }: RevisionChat
     return (
         <div className={styles.pageContainer}>
             <button className={styles.button}
-            onClick={SaveAndExit}>Exit chat</button>
+                onClick={SaveAndExit}>Exit chat</button>
             <div className={styles.chatWrapper}>
                 {/* Chat  area */}
                 <div className={styles.chatContainer}>
@@ -159,4 +160,4 @@ export default function RevisionChatPage({ note, onExit, user_id }: RevisionChat
             </div>
         </div>
     );
-};
+}
