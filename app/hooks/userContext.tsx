@@ -3,6 +3,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import useAuth, { type User } from "./userData"; // Import custom hook for authentication
 
+
 // Define the context type
 interface UserContextType {
   user: User | null;

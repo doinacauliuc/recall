@@ -6,17 +6,20 @@ import { Trash2 } from "lucide-react";
 
 interface ChatListPageProps {
     user_id: Number | undefined; // User ID from the user context
-    onChatSelect: (chat_id: number |undefined) => void; // Function to handle chat selection
+    onChatSelect: (chat: Chat |undefined) => void; // Function to handle chat selection
+    onBack: () => void; // Function to go back to the setup page
 }
 
 export type Chat = {
-    chat_id: number; // Unique identifier for the chat
-    chat_title: string; // Title of the chat
-    messages: string; // Messages in the chat
+    chat_id: number;
+    user_id: number;
+    chat_title: string;
+    last_opened: Date;
+    note_id: number;
 }
 
 
-export default function ChatListPage({ user_id, onChatSelect }: ChatListPageProps) {
+export default function ChatListPage({ user_id, onChatSelect, onBack }: ChatListPageProps) {
     const [chatList, setChatList] = useState<Chat[]>([]); // State to store chat list
     // Fetch the courses related to the user from the API
     const fetchChats = async () => {
@@ -36,6 +39,7 @@ export default function ChatListPage({ user_id, onChatSelect }: ChatListPageProp
 
     return (
         <div className={styles.pageContainer}>
+            <button className={styles.button} onClick={onBack}> Back to Setup </button> {/* Button to go back to setup page */}
             <h1 className={styles.title}>Previous Chats</h1> {/* Title for the page */}
 
 
@@ -47,7 +51,7 @@ export default function ChatListPage({ user_id, onChatSelect }: ChatListPageProp
                             key={chat?.chat_id} // Unique key for each course card
                             className={styles.card}
                         >
-                            <h2 className={styles.element} onClick={() => chat.chat_id && onChatSelect(chat.chat_id)}> {chat?.chat_title}</h2>
+                            <h2 className={styles.element} onClick={() => chat.chat_id && onChatSelect(chat)}> {chat?.chat_title}</h2>
                         </div>
                     ))
                 ) : (

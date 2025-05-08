@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState, useRef, use } from 'react';
 import styles from '@/components/styles/revisionChat.module.css';
-import { Note } from '@/components/revision/revisionSetup'; // Importing the Note type for TypeScript
+import { type Chat } from '@/components/revision/chatList';
 
 
 interface ResumedChatPageProps {
-    chat_id: number | undefined; // Chat ID from the user context
+    chat: Chat | undefined; // Chat ID from the user context
     onExit: () => void; // Function to handle going back to the previous page
 }
 
@@ -14,20 +14,22 @@ interface Message {
     parts: { text: string }[];
 }
 
-export default function ResumedChatPage({ chat_id, onExit }: ResumedChatPageProps) {
+export default function ResumedChatPage({ chat, onExit }: ResumedChatPageProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState<string>(''); // State to manage input value
     const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref to manage the textarea element
     const chatContainerRef = useRef<HTMLDivElement>(null); // Ref to manage the chat container element
-    const [isLoading, setIsLoading] = useState(false); // State to manage loading status
+    
 
     const fetchMessages = async () => {
+        if (!chat) return; // If chat is not available, return early
+        console.log("Fetching messages for chat ID:", chat.chat_id); // Log the chat ID being fetched
         try {
             // Fetch the chat from the server using the chat ID
-            const response = await fetch(`/api/chat-db?chat_id=${chat_id}`);
+            const response = await fetch(`/api/chat-db?chat_id=${chat.chat_id}`);
             const data = await response.json();
-            console.log("Fetched messages:", data); // Log the fetched messages
-            //setMessages(data.messages); // Update the messages state with the fetched data
+            console.log("Fetched messages:", data.messages); // Log the fetched messages
+            setMessages(data.messages); // Update the messages state with the fetched data
             
             if (!response.ok) {
                 throw new Error('Failed to fetch chat');
@@ -39,9 +41,9 @@ export default function ResumedChatPage({ chat_id, onExit }: ResumedChatPageProp
     }
 
     useEffect(() => {
-        console.log("Chat ID page resumed:", chat_id); // Log the chat ID
-        if (chat_id) fetchMessages(); // Only fetch if chat_id is available
-    }, [chat_id]);
+        if (chat?.chat_id) fetchMessages(); // Only fetch if chat_id is available
+        console.log("Chat ID page resumed:", chat?.chat_id); // Log the chat ID
+    }, [chat?.chat_id]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -54,7 +56,7 @@ export default function ResumedChatPage({ chat_id, onExit }: ResumedChatPageProp
         const res = await fetch("/api/chat-db", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: chat_id, messages: messages }),
+            body: JSON.stringify({ chat_id: chat?.chat_id, messages: messages }),
         });
 
         // If the request fails, throw an error
@@ -82,7 +84,7 @@ export default function ResumedChatPage({ chat_id, onExit }: ResumedChatPageProp
             const res = await fetch('/api/gemini-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ history: updatedMessages, note_id: note?.note_id }),
+                body: JSON.stringify({ history: updatedMessages, note_id: chat?.note_id }),
             });
 
             const data = await res.json();

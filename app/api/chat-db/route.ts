@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
         const user_id = Number(body.user_id);
         const chat_title = body.chat_title;
         const messages = body.messages;
+        const note_id = body.note_id;
         const last_opened = new Date();
         console.log("Received body:", body);
 
@@ -27,6 +28,7 @@ export async function POST(req: NextRequest) {
                 chat_title,
                 last_opened,
                 messages,
+                note_id,
             },
         });
         return NextResponse.json(newChat, { status: 201 }); // Return the newly created note
@@ -56,7 +58,10 @@ export async function GET(req: NextRequest) {
                 },
                 select: {
                     chat_id: true,
+                    user_id: true,
                     chat_title: true,
+                    last_opened: true,
+                    note_id: true,
                 },
                 orderBy: {
                     last_opened: "desc", // Order by last opened date in descending order

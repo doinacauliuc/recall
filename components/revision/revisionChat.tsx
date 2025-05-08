@@ -25,7 +25,6 @@ export default function RevisionChatPage({ note, onExit, user_id }: RevisionChat
     const [inputValue, setInputValue] = useState<string>(''); // State to manage input value
     const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref to manage the textarea element
     const chatContainerRef = useRef<HTMLDivElement>(null); // Ref to manage the chat container element
-    const [isLoading, setIsLoading] = useState(false); // State to manage loading status
 
 
     useEffect(() => {
@@ -53,14 +52,24 @@ export default function RevisionChatPage({ note, onExit, user_id }: RevisionChat
         const res = await fetch("/api/chat-db", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({user_id: user_id, chat_title: note.note_title, messages:JSON.stringify(messages)}),
+            body: JSON.stringify({user_id: user_id, chat_title: note.note_title, messages: messages, note_id: note.note_id}),
         });
 
          // If the request fails, throw an error
          if (!res.ok) {
-            throw new Error("Failed to add note.");
+            confirm("Failed to save chat. Exiting without saving?");
+            if (confirm()) {
+                onExit();
+            }
+            console.error("Failed to save chat");
+            return;
+            
         }
-        onExit();
+        else {
+            console.log("Chat saved successfully");
+            onExit();
+        }
+        
     }
 
     const handleSendMessage = async (text: string) => {

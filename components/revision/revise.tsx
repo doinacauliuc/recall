@@ -6,11 +6,12 @@ import type { Note } from "@/components/revision/revisionSetup"; // Importing th
 import { useUser } from "@/app/hooks/userContext"; // Importing user context for managing user state
 import ChatListPage from "@/components/revision/chatList"; // Importing the chat list page component
 import ResumedChatPage from "@/components/revision/resumedChat"; // Importing the resumed chat page component
+import {type Chat} from "@/components/revision/chatList"; // Importing the Chat type for TypeScript
 
 export default function RevisePage() {
     const [activePage, setActivePage] = useState<"setup" | "chat" | "newchat" | "chatlist">("setup"); // Default active page is "setup"
     const [selectedNote, setSelectedNote] = useState<Note | undefined>(undefined); // Track the selected note 
-    const [selectedChat, setSelectedChat] = useState<number | undefined>(undefined); // Track the selected chat
+    const [selectedChat, setSelectedChat] = useState<Chat | undefined>(undefined); // Track the selected chat
     const { user } = useUser(); // Get the user context
     
     // Function to handle when a note is selected
@@ -30,10 +31,15 @@ export default function RevisePage() {
         setSelectedNote(undefined); // Reset the selected note
     }
 
-    const handleResumeChat = (chat_id: number | undefined) => {
-        setSelectedChat(chat_id); // Set the selected chat ID
-        console.log("Selected chat ID:", chat_id); // Log the selected chat ID
+    const handleResumeChat = (chat: Chat | undefined) => {
+        setSelectedChat(chat); // Set the selected chat ID
+        console.log("Selected chat ID:", chat?.chat_id); // Log the selected chat ID
         setActivePage("chat"); 
+    }
+
+    const handleBack = () => {
+        setActivePage("setup"); // Change the active page to "setup"
+        setSelectedChat(undefined); // Reset the selected chat
     }
     return (
         <div>
@@ -48,11 +54,11 @@ export default function RevisePage() {
             )}
             {activePage === "chatlist" && (
                 // Show CoursesPage when activePage is "courses"
-                <ChatListPage user_id={user?.id} onChatSelect={handleResumeChat}/>
+                <ChatListPage user_id={user?.id} onChatSelect={handleResumeChat} onBack={handleBack}/>
             )}
             {activePage === "chat" && selectedChat !== undefined  &&(
                 // Render the revision page -> resumed chat
-                <ResumedChatPage chat_id={selectedChat} onExit={handleExit}/>
+                <ResumedChatPage chat={selectedChat} onExit={handleExit}/>
             )}
         </div>
     );
