@@ -15,6 +15,7 @@ model User {
   courses  Course[]
   flashcardSets FlashcardSet[]
   chats    Chat[]
+  tasks    Task[]
 }
 
 model Course {
@@ -78,4 +79,15 @@ model Chat {
   note          Note     @relation(fields: [note_id], references: [note_id])
 
   @@index([user_id, note_id], map: "Chat_user_id_note_id_fkey")
+}
+
+model Task {
+  task_id       Int     @id @default(autoincrement())
+  task_title    String
+  completed     Boolean   @default(false)
+  date          DateTime
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [id])
+
+  @@index([user_id], map: "Task_user_id_fkey")
 }

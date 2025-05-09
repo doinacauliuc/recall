@@ -1,7 +1,7 @@
 "use client"; // Ensures the component runs on the client side only
 
 import styles from './styles/sidernav.module.css'; // Import custom CSS for styling the sidebar
-import { LayoutDashboard, NotebookText, CreditCard, MessageSquareText, Settings, PencilLine } from 'lucide-react'; // Import icons from 'lucide-react' library
+import { LayoutDashboard, NotebookText, CreditCard, MessageSquareText, Settings, PencilLine,  SquareCheckBig } from 'lucide-react'; // Import icons from 'lucide-react' library
 import { useRouter } from 'next/navigation'; // Import useRouter hook for programmatic navigation
 import Link from "next/link"; // Import Link component for navigating between pages
 import useAuth from '@/app/hooks/userData';
@@ -68,6 +68,12 @@ export default function Sidenav({ setActivePage }: { setActivePage: (page: strin
                 <div className={styles.pagelink} onClick={() => setActivePage("revise")}>
                     <MessageSquareText /> {/* Revise Icon */}
                     <h1>Revise</h1> {/* Revise text */}
+                </div>
+
+                {/* Link to the Chat page, sets the active page to "toDo" when clicked */}
+                <div className={styles.pagelink} onClick={() => setActivePage("toDo")}>
+                    <SquareCheckBig /> {/* Chat Icon */}
+                    <h1>To Do List</h1> {/* Chat text */}
                 </div>
             </div>
             
