@@ -3,6 +3,7 @@ import { useUser } from '@/app/hooks/userContext';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Circle, CircleCheck, Trash2 } from 'lucide-react'; // Importing icons from lucide-react
 import Calendar from '../calendar';
+import Timer from '../timer';
 
 //define the type of task
 export type Task = {
@@ -13,7 +14,20 @@ export type Task = {
     user_id: number; // ID of the user who created the task
 }
 
-export default function Dashboard() {
+interface TimerProps {
+    workDuration: number; // Duration of the work session in minutes
+    breakDuration: number; // Duration of the break session in minutes
+    isRunning: boolean; // Flag to indicate if the timer is running
+    isWorkSession: boolean; // Flag to indicate if it's a work session
+    secondsLeft: number; // Seconds left in the current session
+    setWorkDuration: (minutes: number) => void; // Function to set work duration
+    setBreakDuration: (minutes: number) => void; // Function to set break duration
+    onStart: () => void; // Function to start the timer
+    onPause: () => void; // Function to pause the timer
+    onReset: () => void; // Function to reset the timer
+}
+
+export default function Dashboard({workDuration, breakDuration, isRunning, isWorkSession, secondsLeft, setWorkDuration, setBreakDuration, onStart, onPause, onReset}: TimerProps) {
     //to do list data
     const [tasks, setTasks] = useState<Task[]>([]); // State to manage the list of tasks
     const [newTaskTitle, setNewTaskTitle] = useState<string>(''); // State to manage the new task input
@@ -27,7 +41,7 @@ export default function Dashboard() {
         if (userId) {  // Checking if user ID is available
             fetchTasks(); // Fetching tasks when the component mounts or user ID changes
         }
-    }, [userId,date]); // Dependencies for useEffect
+    }, [userId, date]); // Dependencies for useEffect
 
 
     //to do list functions
@@ -121,7 +135,7 @@ export default function Dashboard() {
 
     return (
         <div className={styles.dashboard}>
-            <div className={styles.managementContainert}>
+            <div className={styles.dashboardPortion}>
                 <div className={styles.calendarContainer}>
                     <Calendar selectedDate={date} setSelectedDate={(date) => setDate(date || new Date())} />
                 </div>
@@ -146,26 +160,45 @@ export default function Dashboard() {
                     </button>
                 </div>
                 <div className={styles.cardContainer}>
-                    {tasks.map((task) => (
-                        <div key={task.task_id} className={styles.taskContainer}>
-                            <div className={styles.task}>
-                                <button className={styles.check} onClick={() => toggleTaskCompletion(task.task_id)}>
-                                    {/* Toggle task completion status */}
-                                    {/* Display a check icon if the task is completed, otherwise display a circle */}
-                                    {task.completed ? <CircleCheck /> : <Circle />} {/* Icon based on task completion status */}
-                                </button>
-                                <span className={styles.taskTitle}>{task.task_title}</span> {/* Task title */}
-                            </div>
-                            <button className={styles.check} onClick={() => deleteTask(task.task_id)}> <Trash2 /></button>
+                    {tasks.length === 0 ? (
+                        <div>
+                            <span className={styles.fillerMessage}>No tasks yet.</span>
                         </div>
-                    ))}
+                    ) : (
+                        tasks.map((task) => (
+                            <div key={task.task_id} className={styles.taskContainer}>
+                                <div className={styles.task}>
+                                    <button className={styles.check} onClick={() => toggleTaskCompletion(task.task_id)}>
+                                        {task.completed ? <CircleCheck /> : <Circle />}
+                                    </button>
+                                    <span className={styles.taskTitle}>{task.task_title}</span>
+                                </div>
+                                <button className={styles.check} onClick={() => deleteTask(task.task_id)}>
+                                    <Trash2 />
+                                </button>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
-            <div className={styles.infoContainer}>
-                <div className={styles.infoCard}></div>
+            <div className={styles.dashboardPortion}>
+                <div className={styles.infoCard}>
+                <Timer
+                    workDuration={workDuration}
+                    breakDuration={breakDuration}
+                    isRunning={isRunning}
+                    isWorkSession={isWorkSession}
+                    secondsLeft={secondsLeft}
+                    setWorkDuration={setWorkDuration}
+                    setBreakDuration={setBreakDuration}
+                    onStart={onStart}
+                    onPause={onPause}
+                    onReset={onReset}
+                />
+                </div>
                 <div className={styles.infoCard}></div>
             </div>
-                    </div>
+        </div>
 
     );
 

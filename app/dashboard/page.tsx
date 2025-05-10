@@ -1,6 +1,6 @@
 "use client"; // This directive ensures the component runs on the client side.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { UserProvider } from "../hooks/userContext";
 
@@ -29,11 +29,69 @@ export default function Dashboard() {
   // Router instance for navigation
   const router = useRouter();
 
+  //Timer Logic defined in parent component to preserve state
+  // Timer state variables
+  const [workDuration, setWorkDuration] = useState(25); // default 25 minutes
+      const [breakDuration, setBreakDuration] = useState(5); // default 5 minutes
+      const [isRunning, setIsRunning] = useState(false);
+      const [isWorkSession, setIsWorkSession] = useState(true);
+      const [secondsLeft, setSecondsLeft] = useState(workDuration * 60);
+      const timerRef = useRef<NodeJS.Timeout | null>(null);
+  
+      // Sync duration when props change
+      useEffect(() => {
+          // Only reset the timer if it's NOT running and durations changed
+          if (!isRunning) {
+              setSecondsLeft(isWorkSession ? workDuration * 60 : breakDuration * 60);
+          }
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [workDuration, breakDuration]);
+  
+  
+      useEffect(() => {
+          if (isRunning) {
+              timerRef.current = setInterval(() => {
+                  setSecondsLeft((prev) => {
+                      if (prev <= 1) {
+                          const nextIsWorkSession = !isWorkSession;
+                          const nextDuration = nextIsWorkSession ? workDuration * 60 : breakDuration * 60;
+  
+                          // Switch session and reset time
+                          setIsWorkSession(nextIsWorkSession);
+                          return nextDuration;
+                      }
+                      return prev - 1;
+                  });
+              }, 1000);
+          }
+  
+          return () => clearInterval(timerRef.current!);
+      }, [isRunning, isWorkSession, workDuration, breakDuration]);
+
+  
+      const handleStart = () => setIsRunning(true);
+      const handlePause = () => setIsRunning(false);
+      const handleReset = () => {
+          setIsRunning(false);
+          setSecondsLeft(isWorkSession ? workDuration * 60 : breakDuration * 60);
+      };
+
 
 
   // Object mapping page names to their respective components
   const pages: { [key: string]: JSX.Element } = {
-    dashboard: <DashboardPage />,
+    dashboard: <DashboardPage
+      workDuration={workDuration}
+      breakDuration={breakDuration}
+      isRunning={isRunning}
+      isWorkSession={isWorkSession}
+      secondsLeft={secondsLeft}
+      setWorkDuration={setWorkDuration}
+      setBreakDuration={setBreakDuration}
+      onStart={handleStart}
+      onPause={handlePause}
+      onReset={handleReset}
+     />,
     viewNotes: <NoteBrowsingPage />,
     addNotes: <AddNotesPage />,
     flashcards: <FlashcardPage />,
@@ -75,7 +133,18 @@ export default function Dashboard() {
       </div>
       <div className={styles.contentContainer}>
         {/* Render the active page or default to the Dashboard */}
-        {pages[activePage] || <DashboardPage />}
+        {pages[activePage] || <DashboardPage
+      workDuration={workDuration}
+      breakDuration={breakDuration}
+      isRunning={isRunning}
+      isWorkSession={isWorkSession}
+      secondsLeft={secondsLeft}
+      setWorkDuration={setWorkDuration}
+      setBreakDuration={setBreakDuration}
+      onStart={handleStart}
+      onPause={handlePause}
+      onReset={handleReset}
+     />}
         
       </div>
       </UserProvider>

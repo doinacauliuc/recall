@@ -1,0 +1,72 @@
+.timerContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem;
+    border-color: #223558;
+}
+ 
+
+.title{
+    font-size: 2rem;
+    color: #6c2e51;
+    font-weight: bold;
+    text-align: center;
+}
+.button {
+     width: 40px;
+    height: 40px;
+    background-color: #6c2e51;
+    color: white;
+    border-radius: 16%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.controlsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.timer{
+    font-size: 2rem;
+    color: #6c2e51;
+    font-weight: bold;
+    text-align: center;
+    font-size: 50px;
+}
+
+.durationContainer{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-direction: row;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.label{
+    font-size: 0.8rem;
+    color: #6c2e51;
+    font-weight: bold;
+    text-align: center;
+}
+
+.select{
+    width: 100px;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 1px solid #6c2e51;
+    font-size: 0.8rem;
+    color: #6c2e51;
+    margin-left: 0.3rem;
+}
