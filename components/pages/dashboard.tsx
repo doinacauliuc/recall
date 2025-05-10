@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Circle, CircleCheck, Trash2 } from 'lucide-react'; // Importing icons from lucide-react
 import Calendar from '../calendar';
 import Timer from '../timer';
+import Chart from '../chart';
 
 //define the type of task
 export type Task = {
@@ -196,7 +197,9 @@ export default function Dashboard({workDuration, breakDuration, isRunning, isWor
                     onReset={onReset}
                 />
                 </div>
-                <div className={styles.infoCard}></div>
+                <div className={styles.infoCard}>
+                    <Chart/>
+                </div>
             </div>
         </div>
 

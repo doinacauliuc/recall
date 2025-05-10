@@ -97,6 +97,7 @@ model Task {
 model StudySession{
   session_id    Int     @id @default(autoincrement())
   date          DateTime
+  duration      Int
   user_id       Int
   user          User     @relation(fields: [user_id], references: [id])
 
