@@ -11,6 +11,7 @@ import FlashcardPage from "@/components/pages/flashcards/flashcards";
 import DashboardPage from "@/components/pages/dashboard";
 import RevisePage from "@/components/revision/revise";
 import Sidenav from "@/components/sidenav";
+import SettingsPage from "@/components/settings/settings";
 import Navbar from "@/components/navbar";
 import styles from "./dashboard.module.css";
 
@@ -96,6 +97,7 @@ export default function Dashboard() {
     addNotes: <AddNotesPage />,
     flashcards: <FlashcardPage />,
     revise: <RevisePage />,
+    settings:  <SettingsPage />,
   };
 
   // useEffect runs once when the component mounts to check user authentication

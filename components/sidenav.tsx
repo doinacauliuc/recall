@@ -75,7 +75,7 @@ export default function Sidenav({ setActivePage }: { setActivePage: (page: strin
             <div className={styles.utilitiesContainer}>
                 
                 {/* Settings page link */}
-                <div className={styles.pagelink}>
+                <div className={styles.pagelink} onClick={() => setActivePage("settings")}>
                     <Settings /> {/* Settings Icon */}
                     <h1>Settings</h1> {/* Settings text */}
                 </div>
