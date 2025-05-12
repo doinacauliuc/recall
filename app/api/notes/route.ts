@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
         if (note_id) {
             // Fetch a specific note by note_id (including content)
             const note = await prisma.note.findUnique({
-                where: { note_id: parseInt(note_id) },
+                where: { note_id: parseInt(note_id), deleted: false },
                 select: { note_title: true, content: true, course_id: true }, // Include note title and content
             });
 
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
         if (course_id) {
             // Fetch all notes for a specific course (only returning note_id & title)
             const notes = await prisma.note.findMany({
-                where: { course_id: parseInt(course_id) },
+                where: { course_id: parseInt(course_id), deleted: false },
                 select: { note_id: true, note_title: true },
             });
 
@@ -105,8 +105,9 @@ export async function DELETE(req: Request) {
         console.log("Deleting note:", { note_id });
 
         // Delete the note from the database
-        const deletedNote = await prisma.note.delete({
+        const deletedNote = await prisma.note.updateMany({
             where: { note_id },
+            data: { deleted: true }
         });
 
         return NextResponse.json(deletedNote, { status: 201 }); // Return deleted note data
