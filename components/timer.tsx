@@ -1,24 +1,34 @@
+//Timer component for a Pomodoro timer 
+
 import styles from '@/components/styles/timer.module.css';
-import React, { useState, useEffect, useRef } from 'react';
 import { CirclePlay, CirclePause, CircleStop } from 'lucide-react'; // Importing icons from lucide-react
 
-interface TimerProps {
-    workDuration: number; // Duration of the work session in minutes
-    breakDuration: number; // Duration of the break session in minutes
-    isRunning: boolean; // Flag to indicate if the timer is running
-    isWorkSession: boolean; // Flag to indicate if it's a work session
-    secondsLeft: number; // Seconds left in the current session
-    setWorkDuration: (minutes: number) => void; // Function to set work duration
-    setBreakDuration: (minutes: number) => void; // Function to set break duration
-    onStart: () => void; // Function to start the timer
-    onPause: () => void; // Function to pause the timer
-    onReset: () => void; // Function to reset the timer
-}
 
-export default function Timer({workDuration, breakDuration, isRunning, isWorkSession, secondsLeft, setWorkDuration, setBreakDuration, onStart, onPause, onReset}: TimerProps) {
+//Timer paramenters are passed from the timerContext
+import { useTimer } from '@/app/hooks/timerContext';
+
+
+export default function Timer() {
+    const {
+        workDuration,
+        breakDuration,
+        isRunning,
+        isWorkSession,
+        secondsLeft,
+        setWorkDuration,
+        setBreakDuration,
+        handleStart,
+        handlePause,
+        handleReset
+    } = useTimer(); // Accessing timer context
+
+    // Function to format time in MM:SS format
    const formatTime = (totalSeconds: number) => {
+        // Calculate minutes and seconds from total seconds
+        //Divide the total seconds by 60 to get minutes and use modulo operator to get the remaining seconds
           const minutes = Math.floor(totalSeconds / 60);
           const seconds = totalSeconds % 60;
+            // Pad the minutes and seconds with leading zeros if they are less than 10
           return `${minutes.toString().padStart(2, '0')}:${seconds
               .toString()
               .padStart(2, '0')}`;
@@ -31,9 +41,9 @@ export default function Timer({workDuration, breakDuration, isRunning, isWorkSes
                 {formatTime(secondsLeft)}
             </div>
             <div className={styles.controlsContainer}>
-                <button className={styles.button} onClick={onStart}><CirclePlay /></button>
-                <button className={styles.button} onClick={onPause}><CirclePause /></button>
-                <button className={styles.button} onClick={onReset}><CircleStop /></button>
+                <button className={styles.button} onClick={handleStart}><CirclePlay /></button>
+                <button className={styles.button} onClick={handlePause}><CirclePause /></button>
+                <button className={styles.button} onClick={handleReset}><CircleStop /></button>
             </div>
             <div className={styles.durationContainer}>
                 <label className={styles.label}>

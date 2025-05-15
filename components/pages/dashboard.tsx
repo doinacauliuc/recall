@@ -1,3 +1,5 @@
+//Dashboard component for managing tasks and displaying user information
+
 import styles from '@/components/styles/dashboard.module.css'
 import { useUser } from '@/app/hooks/userContext';
 import { useState, useEffect } from 'react';
@@ -15,20 +17,7 @@ export type Task = {
     user_id: number; // ID of the user who created the task
 }
 
-interface TimerProps {
-    workDuration: number; // Duration of the work session in minutes
-    breakDuration: number; // Duration of the break session in minutes
-    isRunning: boolean; // Flag to indicate if the timer is running
-    isWorkSession: boolean; // Flag to indicate if it's a work session
-    secondsLeft: number; // Seconds left in the current session
-    setWorkDuration: (minutes: number) => void; // Function to set work duration
-    setBreakDuration: (minutes: number) => void; // Function to set break duration
-    onStart: () => void; // Function to start the timer
-    onPause: () => void; // Function to pause the timer
-    onReset: () => void; // Function to reset the timer
-}
-
-export default function Dashboard({workDuration, breakDuration, isRunning, isWorkSession, secondsLeft, setWorkDuration, setBreakDuration, onStart, onPause, onReset}: TimerProps) {
+export default function Dashboard() {
     //to do list data
     const [tasks, setTasks] = useState<Task[]>([]); // State to manage the list of tasks
     const [newTaskTitle, setNewTaskTitle] = useState<string>(''); // State to manage the new task input
@@ -42,10 +31,11 @@ export default function Dashboard({workDuration, breakDuration, isRunning, isWor
         if (userId) {  // Checking if user ID is available
             fetchTasks(); // Fetching tasks when the component mounts or user ID changes
         }
-    }, [userId, date]); // Dependencies for useEffect
+    }, [userId, date]); // Fetch tasks when userId or date changes
 
 
     //to do list functions
+    //fetch tasks from the API
     const fetchTasks = async () => {
         try {
             const response = await fetch(`/api/tasks?userId=${userId}&date=${date.toISOString()}`); // Fetching tasks from the API
@@ -60,18 +50,21 @@ export default function Dashboard({workDuration, breakDuration, isRunning, isWor
         }
     }
 
+    //functions to increase and decrease the date to navigate through the calendar
     const increaseDate = () => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + 1); // Incrementing the date by one day
         setDate(newDate); // Updating the date state
     }
 
+    // Function to decrease the date by one day 
     const decreaseDate = () => {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() - 1); // Decrementing the date by one day
         setDate(newDate); // Updating the date state
     }
 
+    // Function to add a new task, sends a POST request to the API
     const addTask = async () => {
         if (!newTaskTitle) return; // Prevent adding empty tasks
         try {
@@ -97,6 +90,7 @@ export default function Dashboard({workDuration, breakDuration, isRunning, isWor
             console.error('Error adding task:', error); // Logging any errors
         }
     }
+    // Function to delete a task, sends a DELETE request to the API
     const deleteTask = async (taskId: number) => {
         try {
             const response = await fetch(`/api/tasks?taskId=${taskId}`, {
@@ -111,6 +105,7 @@ export default function Dashboard({workDuration, breakDuration, isRunning, isWor
         }
     }
 
+    // Function to toggle the completion status of a task, sends a PUT request to the API
     const toggleTaskCompletion = async (taskId: number) => {
         try {
             const task = tasks.find(task => task.task_id === taskId);
@@ -184,18 +179,7 @@ export default function Dashboard({workDuration, breakDuration, isRunning, isWor
             </div>
             <div className={styles.dashboardPortion}>
                 <div className={styles.infoCard}>
-                <Timer
-                    workDuration={workDuration}
-                    breakDuration={breakDuration}
-                    isRunning={isRunning}
-                    isWorkSession={isWorkSession}
-                    secondsLeft={secondsLeft}
-                    setWorkDuration={setWorkDuration}
-                    setBreakDuration={setBreakDuration}
-                    onStart={onStart}
-                    onPause={onPause}
-                    onReset={onReset}
-                />
+                <Timer/>
                 </div>
                 <div className={styles.infoCard}>
                     <Chart/>

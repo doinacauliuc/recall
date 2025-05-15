@@ -1,3 +1,6 @@
+//Calendar component
+// This component displays a calendar and allows the user to select a date
+
 import { useState, useEffect } from "react";
 import styles from "@/components/styles/calendar.module.css";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Importing icons from lucide-react
@@ -15,14 +18,20 @@ export default function Calendar({ selectedDate, setSelectedDate }: CalendarProp
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
 
+    // Function to go to the next month
+    // This function updates the current date to the next month
     const nextMonth = () => {
         const nextDate = new Date(currentDate);
+        // Increase the month by 1
         nextDate.setMonth(currentDate.getMonth() + 1);
         setCurrentDate(nextDate);
     }
 
+
+    // Function to go to the previous month
     const prevMonth = () => {
         const prevDate = new Date(currentDate);
+        // Decrease the month by 1
         prevDate.setMonth(currentDate.getMonth() - 1);
         setCurrentDate(prevDate);
     }
@@ -43,6 +52,9 @@ export default function Calendar({ selectedDate, setSelectedDate }: CalendarProp
         // Adjust to make Monday = 0
         const adjustedStart = firstDay === 0 ? 6 : firstDay - 1;
 
+
+        // Create an array of days, filling in null for empty cells
+        // Fill the array with null values for the days before the first day of the month and then fill it with the actual days of the month
         const daysArray = Array(adjustedStart).fill(null).concat(
             Array.from({ length: numDays }, (_, i) => i + 1)
         );
@@ -90,6 +102,9 @@ export default function Calendar({ selectedDate, setSelectedDate }: CalendarProp
                 ))}
             </div>
             <div className={styles.datesGrid}>
+                {/* Render the days of the month in a grid layout */}
+                {/* The grid is created by mapping over the daysInMonth array */}
+                {/* Each day is displayed in a cell, and null values are rendered as empty cells */}
                 {daysInMonth.map((day, index) => (
                     <div key={index}
                         className={`${styles.dateCell} ${selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === currentDate.getMonth() && selectedDate.getFullYear() === currentDate.getFullYear() ? styles.selectedDateCell : ''}`}

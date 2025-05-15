@@ -60,6 +60,7 @@ export async function GET(req: NextRequest) {
     sessions.forEach(session => {
       const day = format(new Date(session.date), 'EEEE');
       if (session._sum.duration !== null && session._sum.duration !== undefined) {
+        // Add the duration to the corresponding day
         studyMap[day] += session._sum.duration / 60; // convert minutes to hours
       }
     });
