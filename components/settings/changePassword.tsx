@@ -39,7 +39,7 @@ export default function ChangePasswordPage({ onBack }: ChangePasswordPageProps) 
             const res = await fetch("/api/settings", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, newPassword, repeatPassword }),
+                body: JSON.stringify({ option: "change", email, newPassword, repeatPassword }),
             });
 
             console.log(res);

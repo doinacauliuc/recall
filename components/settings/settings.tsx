@@ -7,7 +7,11 @@ import { useState } from 'react';
 //add flashcard sets, click on flashcard, show answer, click on menu to add flashcard
 export default function SettingsPage() {
     const [activePage, setActivePage] = useState<"settings" | "changePassword" | "eliminatedElements">("settings"); // Default active page is "sets list"
+    const [selectedSet, setSelectedSet] = useState<{ set_name: string; set_id: number } | null>(null); // Track the selected set
 
+    const handleSetSelect = (set: { set_name: string; set_id: number }) => {
+        setSelectedSet(set); // Set the selected course
+    };
 
     return (
         <div className={styles.pageContainer}>

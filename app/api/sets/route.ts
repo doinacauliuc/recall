@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
         // Fetch sets that belong to the given user ID
         const sets = await prisma.flashcardSet.findMany({
-            where: { user_id: parseInt(userId) }, // Ensure user_id is an integer
+            where: { user_id: parseInt(userId), deleted: false }, // Ensure user_id is an integer
             select: { set_name: true, set_id:true }, // Select only necessary fields
         });
 
@@ -72,8 +72,9 @@ export async function DELETE(req: Request) {
         console.log("Deleting course:", { set_id });
 
         // Delete the set from the database
-        const deletedSet = await prisma.flashcardSet.delete({
+        const deletedSet = await prisma.flashcardSet.updateMany({
             where: { set_id: set_id },
+            data: { deleted: true }
         });
 
         return NextResponse.json(deletedSet, { status: 201 }); // Return deleted set data
