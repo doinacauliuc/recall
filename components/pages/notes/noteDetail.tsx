@@ -7,6 +7,8 @@ import { useUser } from "@/app/hooks/userContext"; // Custom hook to get user co
 import Quill from "quill"; // Import Quill
 import 'quill/dist/quill.bubble.css'; // Import Quill's snow theme CSS
 
+
+
 // Define the types for the props the component expects
 interface NoteDetailPageProps {
     note_id: number; // ID of the note to display
@@ -52,11 +54,12 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
                 quill.root.innerHTML = note.content;
             }
         }
-    }, [note]); // Empty dependency array ensures it only runs once
+    }, [note, loading]); // Empty dependency array ensures it only runs once
 
 
 
-    // Fetch the note based on the note_id passed via props
+    // Fetch the note based on the note_id passed through props
+    // This effect runs when the component mounts or when the note_id changes
     useEffect(() => {
         // Async function to fetch the note data from the API
         const fetchNote = async () => {
@@ -79,12 +82,9 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
         fetchNote(); // Call the fetchNote function to get the data
     }, [note_id]); // Effect runs when the note_id prop changes
 
-    // Return loading state while waiting for the API response
-    if (loading) return <LoadingPage />;
 
-    // Return error state if there is an issue fetching the note
-    if (error) return <p className={styles.error}>{error}</p>;
-
+    // Function to create a summary
+    // This function sends a POST request to the server to generate a summary based on the note content
     const createSummary = async () => {
         setLoading(true);
         try {
@@ -105,8 +105,8 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
                 alert("Summary has been added to course notes");
             }
 
-            const data = await res.json();
             setLoading(false);
+
 
         } catch (error) {
             console.error("Error creating summary:", error);
@@ -114,6 +114,8 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
         }
     };
 
+    // Function to create flashcards
+    // This function sends a POST request to the server to generate flashcards based on the note content
     const createFlashcards = async () => {
         setLoading(true);
         try {
@@ -134,7 +136,6 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
                 alert("Flashcard set has been created succesfully");
             }
 
-            const data = await res.json();
             setLoading(false);
 
         } catch (error) {
@@ -145,33 +146,36 @@ export default function NoteDetailPage({ note_id, onBack }: NoteDetailPageProps)
 
 
     return (
-        <div className={styles.pageContainer}>
-            {/* Back button to return to the previous page */}
+    <div className={styles.pageContainer}>
+        {loading ? (
+            <LoadingPage /> //  Show this when loading is true
+        ) : (
+            <>
+                {/* Back button to return to the previous page */}
+                <div className={styles.buttonContainer}>
+                    <button onClick={onBack} className={styles.button}>Back to Notes</button>
+                    <div className={styles.innerButtonContainer} />
+                    <button className={styles.button} onClick={createSummary}>Create Summary</button>
+                    <button className={styles.button} onClick={createFlashcards}>Create Flashcards</button>
+                </div>
 
-            <button onClick={onBack} className={styles.button}>Back to Notes</button>
-
-            {/* Render the note details if the note exists */}
-            {note ? (
-                <>
-                    <h1 className={styles.title}>{note.note_title}</h1>
-                    <div
-                        ref={quillRef}
-                        style={{
-                            height: 'auto',
-                            width: '950px',
-                        }}
-                        className={styles.contentInput}
-                    /> {/* Quill editor container */}
-                    <div className={styles.buttonContainer}>
-                        <button className={styles.button} onClick={createSummary}> Create Summary</button>
-                        <button className={styles.button} onClick={createFlashcards}> Create Flashcards</button>
-                    </div>
-                </>
-            ) : (
-                // If the note is not found, show this message
-                <p>Note not found</p>
-            )}
-
-        </div>
-    );
-}
+                {/* Render the note details if the note exists */}
+                {note ? (
+                    <>
+                        <h1 className={styles.title}>{note.note_title}</h1>
+                        <div
+                            ref={quillRef}
+                            style={{
+                                height: 'auto',
+                                width: '950px',
+                            }}
+                            className={styles.contentInput}
+                        />
+                    </>
+                ) : (
+                    <p>Note not found</p>
+                )}
+            </>
+        )}
+    </div>
+)};

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"; // Import React hooks for state management and side effects
 import styles from "@/components/styles/pages.module.css"; // Import CSS styles for the component
-import { Trash2 } from 'lucide-react'; // Import Trash icon from lucide-react for delete button
+import { Trash2, ArrowLeft } from 'lucide-react'; // Import Trash icon from lucide-react for delete button
 
 
 // Define the type for a note
@@ -64,7 +64,7 @@ export default function NotesListPage({ course, onBack, onNoteSelect }: NotesLis
     return (
         <div className={styles.pageContainer}>
             {/* Button to navigate back to the Courses page */}
-            <button onClick={onBack} className={styles.button}>Back to Courses</button>
+            <button onClick={onBack} className={styles.button}> Back to Courses </button>
 
             {/* Display the selected course name */}
             <h1 className={styles.title}>{course.course_name.toUpperCase()}</h1>
