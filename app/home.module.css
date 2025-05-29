@@ -1,16 +1,68 @@
 .homeContainer {
   display: flex;
-  justify-content: center; /* Centers horizontally */
-  align-items: center; /* Centers vertically */
-  height: 100vh; /* Full viewport height */
-  width: 100%;
-  position: relative; /* Ensures relative positioning */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: 100vh;
 }
 
-/* Ensure the logo is centered and slightly raised */
 .mainLogo {
-  width: 50vw; /* 50% of viewport width */
-  max-width: 600px; /* Prevents it from getting too large */
-  height: auto; /* Maintains aspect ratio */
-  transform: translateY(-30px) translateX(20px); /* Moves it up slightly */
+  width: 50vw;
+  max-width: 600px;
+  height: auto;
+  margin-bottom: 40px;
+  margin-left: 10%;
+}
+
+.featuresContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.featureCard {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  width: 280px;
+  box-shadow: 0 4px 12px rgba(192, 186, 186, 0.06);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: #555388;
+}
+
+.featureCard:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-4px);
+}
+
+.featureDescription {
+  font-size: 1rem;
+  color:#555388;
+  line-height: 1.5;
+  font-weight: 500;
+  font-family: 'Open Sans', sans-serif;}
+
+
+@media screen and (max-width: 768px) {
+  .featuresContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .featureCard {
+    width: 90%;
+  }
+
+  .mainLogo {
+    width: 60vw;
+    margin-bottom: 30px;
+  }
 }

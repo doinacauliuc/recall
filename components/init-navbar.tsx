@@ -26,8 +26,7 @@ export default function Navbar() {
       {/* Navigation Links Section */}
       <div className={`${styles.navLinks} ${menuOpen ? styles.showMenu : ""}`}>
         {/* Navigation links to different sections of the site */}
-        <Link href="/" className={styles.links}>Functionalities</Link>
-        <Link href="/" className={styles.links}>Resources</Link>
+        <Link href="/functionalities" className={styles.links}>Overview</Link>
 
         {/* Buttons Section */}
         <div className={styles.buttonContainer}>
