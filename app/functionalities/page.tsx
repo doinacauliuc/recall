@@ -3,6 +3,7 @@ import styles from "./functionalities.module.css"; // Import custom CSS for styl
 import Navbar from "@/components/init-navbar";
 
 export default function Functionalities() {
+    // This component describes how the study tool enhances learning efficiency
     return (
         <div className={styles.functionalitiesPage}>
             <Navbar />
