@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react"; // Import React hooks for state management and side effects
+import { useState } from "react"; // Import React hooks for state management and side effects
 import styles from "@/components/styles/settings.module.css"; // Import CSS styles for the component
-import Link from "next/link";
-import { Lock, AtSign, KeyRound } from 'lucide-react';
+import { AtSign, KeyRound } from 'lucide-react';
 
 
 interface ChangePasswordPageProps {
     onBack: () => void;
 }
 
-// The component responsible for displaying the list of notes for a selected course
+// The component responsible for displaying the fields for changing password
 export default function ChangePasswordPage({ onBack }: ChangePasswordPageProps) {
     const [email, setEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -18,7 +17,7 @@ export default function ChangePasswordPage({ onBack }: ChangePasswordPageProps) 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // Handles form submission for login
+    // Handles form submission for change password
     const handleChangePW = async (e: React.FormEvent) => {
         e.preventDefault(); // Prevent default form submission behavior
 
@@ -30,12 +29,12 @@ export default function ChangePasswordPage({ onBack }: ChangePasswordPageProps) 
     }
 
     const changePW = async () => {
-        // Set loading state to true and clear previous errors
+        // Set loading state to true
         setLoading(true);
 
 
         try {
-            // Send a PUT request to change the knowledge to the database
+            // Send a PUT request to change the password to the database
             const res = await fetch("/api/settings", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -49,8 +48,8 @@ export default function ChangePasswordPage({ onBack }: ChangePasswordPageProps) 
             }
 
 
-            console.log("Password changed") // Log successful decrement knowledge
-            onBack(); // Ritorna alla pagina iniziale
+            console.log("Password changed") // Log successful to the console
+            onBack(); // Return to the initial page
         } catch (err) {
             console.error("Error changing password:", err); // Log error to the console
             setError("Failed to change password."); // Display an error message
@@ -67,18 +66,13 @@ export default function ChangePasswordPage({ onBack }: ChangePasswordPageProps) 
                     <button onClick={onBack} className={styles.backButton}>Back to Settings</button>
                 </div>
             <div className={styles.Container}>
-                {/* Logo with a link to the home page */}
-                
                 <div className={styles.imageContainer}>
                     <AtSign size={50} />
                     <KeyRound size={50} />
                     <KeyRound size={50} />
                 </div>
 
-
-                {/* Title for the login form */}
-
-                {/* Login form */}
+                {/* Change password form */}
                 <form onSubmit={handleChangePW} className="space-y-4">
                     {/* Email input field */}
                     <input
@@ -105,7 +99,6 @@ export default function ChangePasswordPage({ onBack }: ChangePasswordPageProps) 
                         onChange={(e) => setRepeatPassword(e.target.value)}
                         className={styles.input}
                     />
-
 
                 </form>
 

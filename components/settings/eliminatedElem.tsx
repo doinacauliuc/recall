@@ -7,7 +7,6 @@ import { Note } from "@/components/pages/notes/notesList"
 import { ArchiveRestore } from 'lucide-react';
 
 interface EliminatedElementsPageProps {
-    // set: { set_name: string; set_id: number }; // Course data containing name and ID
     onBack: () => void;
 }
 
@@ -16,38 +15,52 @@ export default function EliminatedElementsPage({ onBack }: EliminatedElementsPag
     const { user } = useUser(); // Access user context to get user data
     const [sets, setSets] = useState<FlashcardSet[]>([]); // State to store list of sets
     const [notes, setNotes] = useState<Note[]>([]); // State to hold the list of notes
+    const [courses, setCourses] = useState<{ course_id: number; course_name: string }[]>([]); // For storing the list of courses
     const [loading, setLoading] = useState(false); // Loading state to disable the button during API call
     const userId = user?.id; // Get the user ID from the context (make sure user is authenticated)
-    // const setID = set.set_id; // Extract the set ID for fetching flashcards 
     const [error, setError] = useState(""); // State for managing error messages
+    const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
 
 
-    // Fetch the sets related to the user from the API
+    // Fetch the eliminated elements related to the user from the API
     const fetchDeletedElements = async () => {
         try {
-            // Fetch courses from the server using the userId as query parameter
+            // Fetch elements from the server using the userId as query parameter
             const response = await fetch(`/api/settings?userId=${userId}`);
             const data = await response.json(); // Parse the response data
-            setSets(data.sets); // Update the courses state with fetched data
+            setSets(data.sets); // Update the sets state with fetched data
             setNotes(data.notes);
         } catch (error) {
             console.error("Error fetching courses:", error); // Log error if fetching fails
         }
     };
 
+
+    // Function to fetch courses associated with the user
+    const fetchCourses = async () => {
+        try {
+            // Fetch the courses from the server using the user ID
+            const response = await fetch(`/api/courses?userId=${userId}`);
+            const data = await response.json();
+            setCourses(data); // Update the courses state with the fetched data
+        } catch (error) {
+            console.error("Error fetching courses:", error); // Log error if fetching courses fails
+        }
+    };
+
     // Fetch sets when the component mounts or when userId changes
     useEffect(() => {
         if (userId) fetchDeletedElements(); // Only fetch if userId is available (user is logged in)
+        fetchCourses();
     }, [userId]);
 
 
     const restoreEliminatedSets = async (setId: number) => {
-        // Set loading state to true and clear previous errors
+        // Set loading state to true
         setLoading(true);
 
-
         try {
-            // Send a PUT request to change the knowledge to the database
+            // Send a PUT request to restore the set to the database
             const res = await fetch("/api/settings", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -63,7 +76,7 @@ export default function EliminatedElementsPage({ onBack }: EliminatedElementsPag
             }
 
 
-            console.log("Password changed") // Log successful decrement knowledge
+            console.log("Password changed") // Log successful operation
         } catch (err) {
             console.error("Error changing password:", err); // Log error to the console
             setError("Failed to change password."); // Display an error message
@@ -72,17 +85,16 @@ export default function EliminatedElementsPage({ onBack }: EliminatedElementsPag
         }
     };
 
-    const restoreEliminatedNotes = async (noteId: number) => {
-        // Set loading state to true and clear previous errors
+    const restoreEliminatedNotes = async (noteId: number, courseId: number) => {
+        // Set loading state to true
         setLoading(true);
 
-
         try {
-            // Send a PUT request to change the knowledge to the database
+            // Send a PUT request to restore the note to the database
             const res = await fetch("/api/settings", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ option: "restoreNote", note_id: noteId }),
+                body: JSON.stringify({ option: "restoreNote", note_id: noteId, course_id: courseId }),
             });
 
             console.log(res);
@@ -94,7 +106,7 @@ export default function EliminatedElementsPage({ onBack }: EliminatedElementsPag
             }
 
 
-            console.log("Password changed") // Log successful decrement knowledge
+            console.log("Password changed") // Log successful operation
         } catch (err) {
             console.error("Error changing password:", err); // Log error to the console
             setError("Failed to change password."); // Display an error message
@@ -114,48 +126,72 @@ export default function EliminatedElementsPage({ onBack }: EliminatedElementsPag
                 {sets?.length > 0 ? (
                     sets.map((set) => (
                         <div
-                            key={set?.set_id} // Unique key for each course card
+                            key={set?.set_id} // Unique key for each set
                             className={styles.card2}
                         >
                             <h2 className={styles.element}>{set?.set_name}</h2>
-                            {/* Course title which triggers course selection */}
+                            {/* Set title which triggers set selection */}
                             <button onClick={() => restoreEliminatedSets(set?.set_id!)}>
-                                {/* Button to delete the course */}
-                                <ArchiveRestore /> {/* Trash icon */}
+                                {/* Button to restore the course */}
+                                <ArchiveRestore /> {/* Restore icon */}
                             </button>
                         </div>
                     ))
                 ) : (
-                    <p>No sets available</p> // Message when there are no courses
+                    <p>No sets available</p> // Message when there are no sets
                 )}
 
                 <h2 className={styles.title2}>Notes</h2>
                 {notes?.length > 0 ? (
-                    // If notes are available, map through them and display each note
-                    notes.map((note) => (
-                        <div
-                            key={note?.note_id} // Use note ID as the unique key
-                            className={styles.card2} // Style the note card
+                    notes.map((note) => {
+                        const isSelectVisible = selectedNoteId === note?.note_id;
 
-                        >
-                            <h2 className={styles.element}>{note?.note_title}</h2> {/* Display the note title */}
-                            {/* Note title which triggers note selection */}
-                            <button onClick={() => restoreEliminatedNotes(note?.note_id!)}>
-                                {/* Button to delete the note */}
-                                <ArchiveRestore /> {/* Trash icon */}
-                            </button>
-                        </div>
+                        return (
+                            <div key={note?.note_id} className={styles.card2}>
+                                <h2 className={styles.element}>{note?.note_title}</h2>
 
-                    ))
+                                {/* Button to view the select button */}
+                                {!isSelectVisible && (
+                                    <button
+                                        onClick={() => setSelectedNoteId(note?.note_id!)}
+                                    >
+                                        <ArchiveRestore />
+                                    </button>
+                                )}
+
+                                {/* Select visible only if the button has been clicked */}
+                                {isSelectVisible && (
+                                    <select
+                                        onChange={(e) => {
+                                            const selectedCourseId = Number(e.target.value);
+                                            if (selectedCourseId) {
+                                                restoreEliminatedNotes(note.note_id!, selectedCourseId);
+                                                setSelectedNoteId(null); // Hides the select after the selection
+                                            }
+                                        }}
+                                        className={styles.selectInput}
+                                    >
+                                        <option value="">Select course</option>
+                                        {courses.map((course) => (
+                                            <option key={course.course_id} value={course.course_id}>
+                                                {course.course_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
+                            </div>
+                        );
+                    })
                 ) : (
-                    // If no notes are available, display a message
-                    <p>No notes available for this course</p>
+                    <p>No notes available</p>
                 )}
 
             </div>
-            <button className={styles.button} onClick={onBack}>
+
+            <button className={styles.backButton} onClick={onBack}>
                 Back to Settings
             </button>
+
         </div>
     );
 }

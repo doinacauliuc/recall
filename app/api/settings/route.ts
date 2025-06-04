@@ -88,7 +88,10 @@ export async function PUT(req: Request) {
                         where: {
                             note_id: body.note_id
                         },
-                        data: { deleted: false }
+                        data: { 
+                            deleted: false,
+                            course_id: body.course_id
+                        }
                     });
                 }
             }
