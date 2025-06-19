@@ -8,7 +8,7 @@ export default function Home() {
 
   const features = [
     { description: "Store your notes organized by course"},
-    { description: "Automatically create summaries and flashcars"},
+    { description: "Automatically create summaries and flashcards"},
     { description: "Let the AI assistant quiz you on your notes" },
     { description: "Track your study time and your daily tasks"},
   

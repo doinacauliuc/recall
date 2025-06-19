@@ -64,7 +64,6 @@ export default function revisionSetupPage({ onNoteSelect, onResumeSelect }: Revi
 
     return (
         <div className={styles.pageContainer}>
-           <h1 className={styles.title}> Revise with Recall assistant </h1> 
             <div className={styles.selectContainer}>
                 <div className={styles.card}>
                 <h2> Choose a subject to review </h2>

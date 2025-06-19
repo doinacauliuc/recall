@@ -129,6 +129,12 @@ export default function Register() {
             Sign Up
           </button>
         </form>
+        <div className={styles.footer}>
+            <p>Already have an account?</p>
+            <Link href="/login" style={{ color: "#223558" }}>
+              <p>Log In</p>
+            </Link>
+          </div>
       </div>
     </div>
   );

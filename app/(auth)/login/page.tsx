@@ -12,7 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { refetchUser } = useAuth(); // Function to refetch user data
-  const { user } = useAuth(); // Get the current user data from the authentication hook
+
 
   // Next.js router instance for navigation
   const router = useRouter();
@@ -35,8 +35,8 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      // Parse the response from the server
-      const data = await res.json();
+      // response from the server
+     await res.json();
 
       // If login is successful
       if (res.ok) {
@@ -95,6 +95,9 @@ export default function Login() {
               <p>Sign Up</p>
             </Link>
           </div>
+          <Link href="/forgot-password" style={{ color: "#223558" }}>
+              <p>Forgot Password?</p>
+            </Link>
         </form>
       </div>
     </div>

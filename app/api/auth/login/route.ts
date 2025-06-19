@@ -11,6 +11,8 @@ const SECRET_KEY: string = process.env.JWT_SECRET!;
 // Function to handle POST requests to the login endpoint
 export async function POST(req: Request) {
   try {
+
+    
     // Read the request body
     const body = await req.json();
 

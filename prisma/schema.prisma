@@ -103,3 +103,11 @@ model StudySession{
 
   @@index([user_id], map: "StudySession_user_id_fkey")
 }
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
